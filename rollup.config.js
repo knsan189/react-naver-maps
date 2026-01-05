@@ -1,26 +1,26 @@
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import typescript from '@rollup/plugin-typescript';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import postcss from 'rollup-plugin-postcss';
-import dts from 'rollup-plugin-dts';
-import { readFileSync } from 'fs';
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import typescript from "@rollup/plugin-typescript";
+import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import postcss from "rollup-plugin-postcss";
+import dts from "rollup-plugin-dts";
+import { readFileSync } from "fs";
 
-const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
+const packageJson = JSON.parse(readFileSync("./package.json", "utf-8"));
 
 export default [
   {
-    input: 'src/index.ts',
+    input: "src/index.ts",
     output: [
       {
         file: packageJson.main,
-        format: 'cjs',
+        format: "cjs",
         sourcemap: true,
-        name: 'react-naver-maps',
+        name: "react-naver-maps",
       },
       {
         file: packageJson.module,
-        format: 'esm',
+        format: "esm",
         sourcemap: true,
       },
     ],
@@ -28,23 +28,28 @@ export default [
       peerDepsExternal(),
       resolve({
         browser: true,
+        preferBuiltins: false,
       }),
-      commonjs(),
+      commonjs({
+        include: /node_modules/,
+      }),
       typescript({
-        tsconfig: './tsconfig.json',
-        exclude: ['**/*.stories.*', '**/*.test.*'],
+        tsconfig: "./tsconfig.json",
+        exclude: ["**/*.stories.*", "**/*.test.*"],
+        declaration: true,
+        declarationDir: "./dist",
       }),
       postcss({
         extract: true,
         minimize: true,
       }),
     ],
+    external: ["react", "react-dom"],
   },
   {
-    input: 'dist/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    input: "src/index.ts",
+    output: [{ file: "dist/index.d.ts", format: "esm" }],
     plugins: [dts()],
-    external: [/\.css$/],
+    external: [/\.css$/, "react", "react-dom"],
   },
 ];
-
