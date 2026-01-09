@@ -1,48 +1,61 @@
-import { useEffect } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useRef, useState } from "react";
 import { useMap } from "..";
 
+export interface PolygonProps extends naver.maps.PolygonOptions {
+  onClick?: PolygonCallbacks["click"];
+  onMouseEnter?: PolygonCallbacks["mouseenter"];
+}
+
+interface PolygonCallbacks {
+  click?: (event: unknown) => void;
+  mouseenter?: (event: unknown) => void;
+}
 const Polygon = ({
-  paths,
-  zIndex,
-  strokeColor,
-  strokeLineCap,
-  strokeWeight,
-  strokeStyle,
-  strokeLineJoin,
-  fillColor,
-  fillOpacity,
-}: naver.maps.PolygonOptions) => {
+  onClick = () => {},
+  onMouseEnter = () => {},
+  ...options
+}: PolygonProps) => {
   const { current: map } = useMap();
+  const [instance, setInstance] = useState<naver.maps.Polygon | null>(null);
+  const callbacksRef = useRef<PolygonCallbacks>({});
+
+  useEffect(() => {
+    callbacksRef.current = {
+      click: onClick,
+      mouseenter: onMouseEnter,
+    };
+  }, [onClick]);
+
+  useEffect(() => {
+    if (!instance) return;
+    const handlers: naver.maps.MapEventListener[] = [];
+
+    Object.entries(callbacksRef.current).forEach(([key, value]) => {
+      if (!value) return;
+      handlers.push(instance.addListener(key, value));
+    });
+
+    return () => {
+      handlers.forEach((handler) => instance.removeListener(handler));
+    };
+  }, [instance]);
 
   useEffect(() => {
     if (!map) return;
-    const newPolygon = new naver.maps.Polygon({
-      paths,
-      zIndex,
-      strokeColor,
-      strokeLineCap,
-      strokeWeight,
-      strokeStyle,
-      strokeLineJoin,
-      fillColor,
-      fillOpacity,
-    });
-    newPolygon.setMap(map);
+    const newInstance = new naver.maps.Polygon(options);
+    newInstance.setMap(map);
+    setInstance(newInstance);
     return () => {
-      newPolygon.setMap(null);
+      newInstance.setMap(null);
+      newInstance.onRemove();
+      setInstance(null);
     };
-  }, [
-    map,
-    paths,
-    zIndex,
-    strokeColor,
-    strokeLineCap,
-    strokeWeight,
-    strokeStyle,
-    strokeLineJoin,
-    fillColor,
-    fillOpacity,
-  ]);
+  }, [map]);
+
+  useEffect(() => {
+    instance?.addListener("click", onClick);
+  }, []);
   return null;
 };
 

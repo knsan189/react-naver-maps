@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import Map from "./Map";
 import Overlay from "./Overlay";
 import { MAP_OPTIONS, NCP_KEY_ID } from "../const";

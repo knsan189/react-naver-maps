@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMap } from "..";
 
 export interface PolylineProps
   extends Omit<naver.maps.PolylineOptions, "path"> {
   path: number[][];
-  onClick?: (event: unknown) => void;
+  onClick?: PolylineCallbacks["click"];
+  onMouseEnter?: PolylineCallbacks["mouseenter"];
+}
+
+interface PolylineCallbacks {
+  click?: (event: unknown) => void;
+  mouseenter?: (event: unknown) => void;
 }
 
 const Polyline = ({
@@ -15,9 +21,35 @@ const Polyline = ({
   strokeLineJoin,
   clickable,
   onClick,
+  onMouseEnter = () => {},
 }: PolylineProps) => {
   const { current: map } = useMap();
-  const [polyline, setPolyline] = useState<null | naver.maps.Polyline>(null);
+  const [instance, setInstance] = useState<null | naver.maps.Polyline>(null);
+  const callbacksRef = useRef<PolylineCallbacks>({
+    click: onClick,
+  });
+
+  useEffect(() => {
+    callbacksRef.current = {
+      click: onClick,
+      mouseenter: onMouseEnter,
+    };
+  }, [onClick, onMouseEnter]);
+
+  useEffect(() => {
+    if (!instance) return;
+    const handlers: naver.maps.MapEventListener[] = [];
+
+    Object.entries(callbacksRef.current).forEach(([key, value]) => {
+      if (!value) return;
+      handlers.push(instance.addListener(key, value));
+    });
+
+    return () => {
+      handlers.forEach((handler) => instance.removeListener(handler));
+    };
+  }, [instance]);
+
   useEffect(() => {
     if (!map) return;
     const newPoyline = new naver.maps.Polyline({
@@ -29,10 +61,10 @@ const Polyline = ({
       clickable,
     });
     newPoyline.setMap(map);
-    setPolyline(newPoyline);
+    setInstance(newPoyline);
     return () => {
       newPoyline.setMap(null);
-      setPolyline(null);
+      newPoyline.onRemove();
     };
   }, [
     map,
@@ -43,14 +75,6 @@ const Polyline = ({
     strokeLineCap,
     strokeLineJoin,
   ]);
-
-  useEffect(() => {
-    if (!polyline || !onClick) return;
-    const listener = polyline.addListener("click", onClick);
-    return () => {
-      polyline.removeListener(listener);
-    };
-  }, [onClick, polyline]);
 
   return null;
 };

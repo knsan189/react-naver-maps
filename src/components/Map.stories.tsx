@@ -1,5 +1,5 @@
-import { Meta, StoryObj } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
+import { Meta, StoryObj } from "@storybook/react-vite";
+import { action } from "storybook/actions";
 import Map from "./Map";
 import Marker from "./Marker";
 import { MAP_OPTIONS, NCP_KEY_ID } from "../const";

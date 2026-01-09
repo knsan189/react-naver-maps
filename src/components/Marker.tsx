@@ -6,18 +6,18 @@ interface MarkerClickEvent extends naver.maps.PointerEvent {
   overlay: naver.maps.Marker;
   domEvent: naver.maps.DOMEvent;
 }
-export interface MarkerProps extends naver.maps.MarkerOptions {
-  onClick?: (event: MarkerClickEvent) => void;
-  onMouseEnter?: (marker: naver.maps.Marker) => void;
-  onMouseLeave?: (marker: naver.maps.Marker) => void;
-  onPositionChanged?: (marker: naver.maps.Marker) => void;
-}
 
 interface MarkerCallbacks {
   click?: (marker: MarkerClickEvent) => void;
   mouseenter?: (marker: naver.maps.Marker) => void;
   mouseleave?: (marker: naver.maps.Marker) => void;
   positionchanged?: (marker: naver.maps.Marker) => void;
+}
+export interface MarkerProps extends naver.maps.MarkerOptions {
+  onClick?: MarkerCallbacks["click"];
+  onMouseEnter?: MarkerCallbacks["mouseenter"];
+  onMouseLeave?: MarkerCallbacks["mouseleave"];
+  onPositionChanged?: MarkerCallbacks["positionchanged"];
 }
 
 const Marker = ({
