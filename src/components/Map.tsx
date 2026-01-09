@@ -1,120 +1,141 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { MapContext } from "../context/MapContext";
-import { loadNaverMaps, NaverMapsSubmodule } from "../utils/scriptLoader";
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  ReactNode,
+  createContext,
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+} from "react";
+import { NaverMapsSubmodule } from "../utils/scriptLoader";
+import { MountedMapContext } from "./MapProvider";
+import useScriptLoader from "../hooks/useScriptLoader";
 
+export const MapContext = createContext<naver.maps.Map | undefined>(undefined);
 export interface MapProps {
   ncpKeyId: string;
   id?: string;
   mapTypeId?: naver.maps.MapTypeId;
   mapOptions?: naver.maps.MapOptions;
-  children: React.ReactNode;
+  children: ReactNode;
   submodules?: NaverMapsSubmodule[];
   style?: React.CSSProperties;
-  onBoundsChanged?: (map: naver.maps.Map) => void;
   onLoad?: (map: naver.maps.Map) => void;
-  onMoveEnd?: (map: naver.maps.Map) => void;
-  onMoveStart?: (map: naver.maps.Map) => void;
+  onZoomStart?: (map: naver.maps.Map) => void;
+  onZoomEnd?: (map: naver.maps.Map) => void;
+  onDragEnd?: (map: naver.maps.Map) => void;
+  onDragStart?: (map: naver.maps.Map) => void;
 }
 
-const Map = ({
-  id = "naver-map",
-  mapTypeId = "normal" as naver.maps.MapTypeId,
-  ncpKeyId,
-  children,
-  mapOptions,
-  submodules = [],
-  style,
-  onBoundsChanged,
-  onLoad,
-  onMoveEnd,
-  onMoveStart,
-}: MapProps) => {
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
-  const { map, setMap } = useContext(MapContext);
+interface MapCallbacks {
+  load?: (map: naver.maps.Map) => void;
+  zoomstart?: (map: naver.maps.Map) => void;
+  zoomend?: (map: naver.maps.Map) => void;
+  dragstart?: (map: naver.maps.Map) => void;
+  dragend?: (map: naver.maps.Map) => void;
+}
 
-  const key = useMemo(() => {
-    return JSON.stringify({
+const Map = forwardRef<naver.maps.Map, MapProps>(
+  (
+    {
       id,
-      mapOptions,
-      submodules,
-    });
-  }, [id, mapOptions, submodules]);
-
-  useEffect(() => {
-    const { submodules } = JSON.parse(key);
-    loadNaverMaps({
+      mapTypeId = "normal" as naver.maps.MapTypeId,
       ncpKeyId,
-      submodules: submodules as NaverMapsSubmodule[],
-    }).then(() => {
-      setIsScriptLoaded(true);
-    });
-  }, [key, ncpKeyId]);
+      children,
+      mapOptions,
+      submodules = [],
+      style,
+      onLoad = () => {},
+      onZoomStart = () => {},
+      onZoomEnd = () => {},
+      onDragStart = () => {},
+      onDragEnd = () => {},
+    }: MapProps,
+    ref: React.Ref<naver.maps.Map | undefined>
+  ) => {
+    const mountedMapContext = useContext(MountedMapContext);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!isScriptLoaded) return;
-    const { id, mapOptions } = JSON.parse(key);
-    const newMap = new naver.maps.Map(id, mapOptions);
-    setMap(newMap);
-  }, [isScriptLoaded, setMap, key]);
+    const [mapInstance, setMapInstance] = useState<naver.maps.Map>();
+    const contextValueRef = useRef<naver.maps.Map | undefined>(undefined);
 
-  useEffect(() => {
-    if (!map) return;
-    map.setMapTypeId(mapTypeId);
-  }, [map, mapTypeId]);
+    const { isScriptLoaded } = useScriptLoader({ ncpKeyId, submodules });
 
-  useEffect(() => {
-    if (!map || !onBoundsChanged) return;
-    const listener = map.addListener("bounds_changed", () => {
-      onBoundsChanged(map);
-    });
-    return () => {
-      map.removeListener(listener);
-    };
-  }, [map, onBoundsChanged]);
+    useEffect(() => {
+      if (!isScriptLoaded || !containerRef.current) return;
+      const newInstance = new naver.maps.Map(containerRef.current, mapOptions);
+      setMapInstance(newInstance);
+      mountedMapContext.onMount(newInstance, id);
+      contextValueRef.current = newInstance;
+      return () => {
+        mountedMapContext.onUnmount(id);
+        contextValueRef.current = undefined;
+        newInstance.destroy();
+      };
+    }, [isScriptLoaded]);
 
-  useEffect(() => {
-    if (!map || !onLoad) return;
-    const listener = map.addListener("init", () => {
-      onLoad(map);
-    });
-    return () => {
-      map.removeListener(listener);
-    };
-  }, [map, onLoad]);
+    const callbacksRef = useRef<MapCallbacks>({});
 
-  useEffect(() => {
-    if (!map || !onMoveEnd) return;
-    const handleMoveEnd = () => {
-      onMoveEnd(map);
-    };
-    const dragendListener = map.addListener("dragend", handleMoveEnd);
-    const zoomendListener = map.addListener("zoomend", handleMoveEnd);
-    return () => {
-      map.removeListener(dragendListener);
-      map.removeListener(zoomendListener);
-    };
-  }, [map, onMoveEnd]);
+    useEffect(() => {
+      callbacksRef.current = {
+        load: onLoad,
+        zoomstart: onZoomStart,
+        zoomend: onZoomEnd,
+        dragend: onDragEnd,
+        dragstart: onDragStart,
+      };
+    }, [onLoad, onZoomStart, onDragEnd, onDragStart]);
 
-  useEffect(() => {
-    if (!map || !onMoveStart) return;
-    const dragstartListener = map.addListener("dragstart", () => {
-      onMoveStart(map);
-    });
-    const zoomstartListener = map.addListener("zoomstart", () => {
-      onMoveStart(map);
-    });
-    return () => {
-      map.removeListener(dragstartListener);
-      map.removeListener(zoomstartListener);
-    };
-  }, [map, onMoveStart]);
+    useEffect(() => {
+      if (!mapInstance) return;
+      mapInstance.setMapTypeId(mapTypeId);
+    }, [mapInstance, mapTypeId]);
 
-  return (
-    <div id={id} style={{ width: "100%", height: "100%", ...style }}>
-      {children}
-    </div>
-  );
-};
+    useEffect(() => {
+      if (!mapInstance) return;
+      const listeners: naver.maps.MapEventListener[] = [];
+      Object.entries(callbacksRef.current).forEach(([event, callback]) => {
+        const listener = mapInstance.addListener(event, callback);
+        listeners.push(listener);
+      });
+      return () => {
+        listeners.forEach((listener) => {
+          mapInstance.removeListener(listener);
+        });
+      };
+    }, [mapInstance]);
+
+    useEffect(() => {
+      if (!mapInstance) return;
+      mapInstance.setMapTypeId(mapTypeId);
+    }, [mapInstance, mapTypeId]);
+
+    useEffect(() => {
+      if (!mapInstance || !mapOptions) return;
+      mapInstance.setOptions(mapOptions);
+    }, [mapInstance, mapOptions]);
+
+    useImperativeHandle(ref, () => contextValueRef.current, [mapInstance]);
+
+    const containerStyle = useMemo(() => {
+      return { width: "100%", height: "100%", ...style };
+    }, [style]);
+
+    return (
+      <div id={id} style={containerStyle} ref={containerRef}>
+        {mapInstance && (
+          <MapContext.Provider value={mapInstance}>
+            {children}
+          </MapContext.Provider>
+        )}
+      </div>
+    );
+  }
+);
+
+Map.displayName = "Map";
 
 export default Map;
-

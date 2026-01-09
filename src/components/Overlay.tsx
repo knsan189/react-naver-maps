@@ -1,66 +1,59 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import useMap from "../hooks/useMap";
+import { useMap } from "..";
 import createCustomOverlayClass, {
+  CustomOverlayCtor,
   type OverlayAnchorType,
 } from "../utils/customOverlay";
 
-type CustomOverlayCtor = ReturnType<typeof createCustomOverlayClass>;
-type CustomOverlayInstance = InstanceType<CustomOverlayCtor>;
-
 interface Props {
   children: ReactNode;
-  position: number[];
-  zIndex?: number;
-  anchor?: OverlayAnchorType;
+  position: naver.maps.Coord | naver.maps.CoordLiteral;
+  zIndex: number;
+  anchor: OverlayAnchorType;
 }
 
-const Overlay = ({
-  position,
-  children,
-  zIndex = 1,
-  anchor = "bottom-center",
-}: Props) => {
-  const { map } = useMap();
-  const divRef = useRef<HTMLDivElement>(null);
-  const [overlay, setOverlay] = useState<CustomOverlayInstance | null>(null);
-  const positionRef = useRef<number[]>(position);
+const Overlay = ({ children, ...options }: Props) => {
+  const { current: map } = useMap();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [instance, setInstance] = useState<InstanceType<CustomOverlayCtor>>();
 
   useEffect(() => {
-    positionRef.current = position;
-  }, [position]);
-
-  useEffect(() => {
-    if (!map || !divRef.current) return;
+    if (!map || !containerRef.current) return;
 
     const CustomOverlay = createCustomOverlayClass();
-    const newOverlay: CustomOverlayInstance = new CustomOverlay({
-      element: divRef.current,
-      position: new naver.maps.LatLng(
-        positionRef.current[1],
-        positionRef.current[0]
-      ),
-      zIndex,
-      anchor,
+
+    const newInstance = new CustomOverlay({
+      element: containerRef.current,
+      ...options,
     });
-    newOverlay.setMap(map);
-    setOverlay(newOverlay);
+    newInstance.setMap(map);
+    setInstance(newInstance);
     return () => {
-      newOverlay.setMap(null);
-      setOverlay(null);
+      newInstance.destroy();
     };
-  }, [map, zIndex, anchor]);
+  }, [map]);
 
   useEffect(() => {
-    if (!overlay) return;
-    overlay.setPosition(new naver.maps.LatLng(position[1], position[0]));
-  }, [overlay, position]);
+    if (!instance) return;
+    instance.setPosition(options.position);
+  }, [instance, options.position]);
+
+  useEffect(() => {
+    if (!instance) return;
+    instance.setZIndex(options.zIndex);
+  }, [instance, options.zIndex]);
+
+  useEffect(() => {
+    if (!instance) return;
+    instance.setAnchor(options.anchor);
+  }, [instance, options.anchor]);
 
   return (
     <div>
-      <div ref={divRef}>{children}</div>
+      <div ref={containerRef}>{children}</div>
     </div>
   );
 };
 
 export default Overlay;
-

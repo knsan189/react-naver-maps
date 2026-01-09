@@ -1,13 +1,62 @@
-import React, { useMemo, useState } from "react";
-import { MapContext } from "../context/MapContext";
+import React, { useCallback, useContext, useMemo, useState } from "react";
+import { createContext } from "react";
+import { MapContext } from "./Map";
 
-const NaverMapProvider = ({ children }: { children: React.ReactNode }) => {
-  const [map, setMap] = useState<naver.maps.Map | null>(null);
+export interface MountedMapContextType {
+  maps: { [id: string]: naver.maps.Map };
+  onMount: (map: naver.maps.Map, id?: string) => void;
+  onUnmount: (id?: string) => void;
+}
 
-  const value = useMemo(() => ({ map, setMap }), [map, setMap]);
+export const MountedMapContext = createContext<MountedMapContextType>({
+  maps: {},
+  onMount: () => {},
+  onUnmount: () => {},
+});
 
-  return <MapContext.Provider value={value}>{children}</MapContext.Provider>;
+interface MapProviderProps {
+  children: React.ReactNode;
+}
+
+const MapProvider = ({ children }: MapProviderProps) => {
+  const [maps, setMaps] = useState<{ [id: string]: naver.maps.Map }>({});
+
+  const onMount = useCallback((map: naver.maps.Map, id: string = "default") => {
+    setMaps((prev) => ({ ...prev, [id]: map }));
+  }, []);
+
+  const onUnmount = useCallback((id: string = "default") => {
+    setMaps((prev) => {
+      const newMaps = { ...prev };
+      delete newMaps[id];
+      return newMaps;
+    });
+  }, []);
+
+  const value = useMemo(
+    () => ({ maps, onMount, onUnmount }),
+    [maps, onMount, onUnmount]
+  );
+  return (
+    <MountedMapContext.Provider value={value}>
+      {children}
+    </MountedMapContext.Provider>
+  );
 };
 
-export default NaverMapProvider;
+export type MapCollection = {
+  [id: string]: naver.maps.Map | undefined;
+  current?: naver.maps.Map;
+};
 
+export const useMap = () => {
+  const { maps } = useContext(MountedMapContext);
+  const currentMap = useContext(MapContext);
+  const mapsWithCurrent: MapCollection = useMemo(() => {
+    if (!currentMap) return maps;
+    return { ...maps, current: currentMap };
+  }, [maps, currentMap]);
+  return mapsWithCurrent;
+};
+
+export default MapProvider;

@@ -9,9 +9,9 @@ export type OverlayAnchorType =
   | "bottom-center"
   | "bottom-right";
 
-export interface CustomOverlayOptions {
+export interface OverlayOptions {
   element: HTMLElement;
-  position: naver.maps.LatLng;
+  position: naver.maps.Coord | naver.maps.CoordLiteral;
   zIndex: number;
   anchor?: OverlayAnchorType;
 }
@@ -28,11 +28,22 @@ const anchorStyleTransformMap: Record<OverlayAnchorType, string> = {
   "bottom-right": "translate(0, -100%)",
 };
 
-const createCustomOverlayClass = () => {
-  return class CustomOverlay extends naver.maps.OverlayView {
-    _element: HTMLElement;
+export type CustomOverlayCtor = new (opts: OverlayOptions) => {
+  getPosition(): naver.maps.Coord | naver.maps.CoordLiteral;
+  setPosition(position: naver.maps.Coord | naver.maps.CoordLiteral): void;
+  setZIndex(zIndex: number): void;
+  setAnchor(anchor: OverlayAnchorType): void;
+  onAdd(): void;
+  draw(): void;
+  destroy(): void;
+  setMap(map: naver.maps.Map): void;
+};
 
-    _position: naver.maps.LatLng;
+const createCustomOverlayClass = (): CustomOverlayCtor => {
+  return class CustomOverlay extends naver.maps.OverlayView {
+    private _element: HTMLElement;
+
+    _position: naver.maps.Coord | naver.maps.CoordLiteral;
 
     zIndex: number;
 
@@ -43,7 +54,7 @@ const createCustomOverlayClass = () => {
       position,
       zIndex,
       anchor = "center-center",
-    }: CustomOverlayOptions) {
+    }: OverlayOptions) {
       super();
       this._element = element;
       this._position = position;
@@ -55,13 +66,19 @@ const createCustomOverlayClass = () => {
       return this._position;
     }
 
-    setPosition(position: naver.maps.LatLng) {
+    setPosition(position: naver.maps.Coord | naver.maps.CoordLiteral) {
       this._position = position;
       this.draw();
     }
 
     setZIndex(zIndex: number) {
       this.zIndex = zIndex;
+      this.draw();
+    }
+
+    setAnchor(anchor: OverlayAnchorType) {
+      this.anchor = anchor;
+      this.draw();
     }
 
     onAdd() {
@@ -74,8 +91,9 @@ const createCustomOverlayClass = () => {
         return;
       }
       const projection = this.getProjection();
-      const position = this.getPosition();
-      const pixelPosition = projection.fromCoordToOffset(position);
+      const pixelPosition = projection.fromCoordToOffset(
+        new naver.maps.LatLng(this.getPosition())
+      );
       this._element.style.position = "absolute";
       this._element.style.zIndex = this.zIndex.toString();
       this._element.style.left = `${pixelPosition.x}px`;
@@ -83,8 +101,12 @@ const createCustomOverlayClass = () => {
       this._element.style.transform = anchorStyleTransformMap[this.anchor];
     }
 
-    onRemove(): void {
+    destroy(): void {
       this._element.remove();
+    }
+
+    onRemove(): void {
+      this.destroy();
     }
   };
 };

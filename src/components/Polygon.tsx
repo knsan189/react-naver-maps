@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import useMap from "../hooks/useMap";
+import { useMap } from "..";
 
 const Polygon = ({
   paths,
@@ -12,7 +12,7 @@ const Polygon = ({
   fillColor,
   fillOpacity,
 }: naver.maps.PolygonOptions) => {
-  const { map } = useMap();
+  const { current: map } = useMap();
 
   useEffect(() => {
     if (!map) return;
@@ -47,4 +47,3 @@ const Polygon = ({
 };
 
 export default Polygon;
-

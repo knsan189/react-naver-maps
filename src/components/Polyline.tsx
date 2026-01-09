@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useMap from "../hooks/useMap";
+import { useMap } from "..";
 
 export interface PolylineProps
   extends Omit<naver.maps.PolylineOptions, "path"> {
@@ -16,7 +16,7 @@ const Polyline = ({
   clickable,
   onClick,
 }: PolylineProps) => {
-  const { map } = useMap();
+  const { current: map } = useMap();
   const [polyline, setPolyline] = useState<null | naver.maps.Polyline>(null);
   useEffect(() => {
     if (!map) return;
@@ -56,4 +56,3 @@ const Polyline = ({
 };
 
 export default Polyline;
-

@@ -1,105 +1,81 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
-import useMap from "../hooks/useMap";
+import { useMap } from "..";
 
+interface MarkerClickEvent extends naver.maps.PointerEvent {
+  overlay: naver.maps.Marker;
+  domEvent: naver.maps.DOMEvent;
+}
 export interface MarkerProps extends naver.maps.MarkerOptions {
-  zIndex?: number;
-  onClick?: (marker: naver.maps.Marker) => void;
+  onClick?: (event: MarkerClickEvent) => void;
   onMouseEnter?: (marker: naver.maps.Marker) => void;
   onMouseLeave?: (marker: naver.maps.Marker) => void;
   onPositionChanged?: (marker: naver.maps.Marker) => void;
-  position: [number, number];
+}
+
+interface MarkerCallbacks {
+  click?: (marker: MarkerClickEvent) => void;
+  mouseenter?: (marker: naver.maps.Marker) => void;
+  mouseleave?: (marker: naver.maps.Marker) => void;
+  positionchanged?: (marker: naver.maps.Marker) => void;
 }
 
 const Marker = ({
-  zIndex,
-  onClick,
-  onMouseEnter,
-  onMouseLeave,
-  onPositionChanged,
-  position,
-  icon,
-  clickable,
-  draggable,
+  onClick = () => {},
+  onMouseEnter = () => {},
+  onMouseLeave = () => {},
+  onPositionChanged = () => {},
+  ...markerOptions
 }: MarkerProps) => {
-  const { map } = useMap();
-  const [marker, setMarker] = useState<naver.maps.Marker>();
-
-  const positionRef = useRef<[number, number]>(position);
-
-  useEffect(() => {
-    positionRef.current = position;
-  }, [position]);
+  const { current: map } = useMap();
+  const [instance, setInstance] = useState<naver.maps.Marker>();
 
   useEffect(() => {
     if (!map) return undefined;
-    const newMarker = new naver.maps.Marker({
-      icon,
-      position: new naver.maps.LatLng(
-        positionRef.current[1],
-        positionRef.current[0]
-      ),
-      clickable,
-      draggable,
+    const newInstance = new naver.maps.Marker(markerOptions);
+    setInstance(newInstance);
+    newInstance.setMap(map);
+    return () => {
+      newInstance.setMap(null);
+    };
+  }, [map]);
+
+  useEffect(() => {
+    if (!instance) return undefined;
+    instance.setPosition(markerOptions.position);
+  }, [instance, markerOptions.position]);
+
+  useEffect(() => {
+    if (markerOptions.zIndex === undefined || !instance) return;
+    instance.setZIndex(markerOptions.zIndex);
+  }, [markerOptions.zIndex, instance]);
+
+  const callbacksRef = useRef<MarkerCallbacks>({});
+
+  useEffect(() => {
+    callbacksRef.current = {
+      click: onClick,
+      mouseenter: onMouseEnter,
+      mouseleave: onMouseLeave,
+      positionchanged: onPositionChanged,
+    };
+  }, [onClick, onMouseEnter, onMouseLeave, onPositionChanged]);
+
+  useEffect(() => {
+    if (!instance) return;
+    const handlers: naver.maps.MapEventListener[] = [];
+
+    Object.entries(callbacksRef.current).forEach(([key, value]) => {
+      if (!value) return;
+      handlers.push(instance.addListener(key, value));
     });
-    setMarker(newMarker);
-    newMarker.setMap(map);
+
     return () => {
-      setMarker(undefined);
-      newMarker.setMap(null);
+      handlers.forEach((handler) => instance.removeListener(handler));
     };
-  }, [map, icon, clickable, draggable]);
-
-  useEffect(() => {
-    if (!marker) return undefined;
-    marker.setPosition(new naver.maps.LatLng(position[1], position[0]));
-  }, [marker, position]);
-
-  useEffect(() => {
-    if (zIndex && marker) {
-      marker.setZIndex(zIndex);
-    }
-  }, [zIndex, marker]);
-
-  useEffect(() => {
-    if (!marker) return undefined;
-    const newEvent = marker.addListener("click", () => onClick?.(marker));
-    return () => {
-      marker.removeListener(newEvent);
-    };
-  }, [marker, onClick]);
-
-  useEffect(() => {
-    if (!marker) return undefined;
-    const newEvent = marker.addListener("mouseover", () =>
-      onMouseEnter?.(marker)
-    );
-    return () => {
-      marker.removeListener(newEvent);
-    };
-  }, [marker, onMouseEnter]);
-
-  useEffect(() => {
-    if (!marker) return undefined;
-    const newEvent = marker.addListener("mouseout", () =>
-      onMouseLeave?.(marker)
-    );
-    return () => {
-      marker.removeListener(newEvent);
-    };
-  }, [marker, onMouseLeave]);
-
-  useEffect(() => {
-    if (!marker) return undefined;
-    const newEvent = marker.addListener("position_changed", () => {
-      onPositionChanged?.(marker);
-    });
-    return () => {
-      marker.removeListener(newEvent);
-    };
-  }, [marker, onPositionChanged]);
+  }, [instance]);
 
   return null;
 };
 
 export default Marker;
-
