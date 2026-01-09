@@ -1,0 +1,52 @@
+# 소스 파일
+src/
+
+# 개발 도구 설정
+.eslintrc.json
+.eslintignore
+tsconfig.json
+rollup.config.js
+vite.config.*
+*.config.js
+*.config.ts
+
+# Storybook
+.storybook/
+storybook-static/
+
+# 테스트
+**/__tests__/
+**/*.test.*
+**/*.spec.*
+*.test.*
+*.spec.*
+
+# 개발 의존성
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE 및 에디터
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 빌드 산출물 (개발용)
+*.log
+*.tsbuildinfo
+
+# 기타
+.env
+.env.local
+.env.*.local
+coverage/
+.nyc_output/
