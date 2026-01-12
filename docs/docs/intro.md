@@ -51,7 +51,7 @@ function App() {
 
 ## 다음 단계
 
-- [설치 가이드](./installation) - 프로젝트에 라이브러리를 설치하는 방법을 알아봅니다
-- [Map 컴포넌트 사용법](./api/map) - 지도 컴포넌트의 기본 사용법을 알아봅니다
-- [Marker 컴포넌트](./api/marker) - 마커를 지도에 추가하는 방법을 알아봅니다
-- [Overlay 컴포넌트](./api/overlay) - 커스텀 오버레이를 만드는 방법을 알아봅니다
+- [설치 가이드](/docs/installation) - 프로젝트에 라이브러리를 설치하는 방법을 알아봅니다
+- [Map 컴포넌트 사용법](/docs/api/map) - 지도 컴포넌트의 기본 사용법을 알아봅니다
+- [Marker 컴포넌트](/docs/api/marker) - 마커를 지도에 추가하는 방법을 알아봅니다
+- [Overlay 컴포넌트](/docs/api/overlay) - 커스텀 오버레이를 만드는 방법을 알아봅니다
