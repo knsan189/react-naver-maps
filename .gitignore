@@ -33,8 +33,9 @@ lerna-debug.log*
 *.sln
 *.sw?
 
-# Storybook
-storybook-static
+# Docusaurus
+.docusaurus
+build
 
 # TypeScript
 *.tsbuildinfo
