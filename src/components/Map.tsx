@@ -13,18 +13,92 @@ import { NaverMapsSubmodule } from "../utils/scriptLoader";
 import { MapContext, MountedMapContext } from "./MapProvider";
 import useScriptLoader from "../hooks/useScriptLoader";
 
+const EVENT_TO_PROP = {
+  init: "onInit",
+  zoomstart: "onZoomStart",
+  zoomend: "onZoomEnd",
+  bounds_changed: "onBoundsChanged",
+  dragstart: "onDragStart",
+  dragend: "onDragEnd",
+  idle: "onIdle",
+  resize: "onResize",
+  scroll: "onScroll",
+  addLayer: "onAddLayer",
+  center_changed: "onCenterChanged",
+  centerPoint_changed: "onCenterPointChanged",
+  click: "onClick",
+  dbclick: "onDbclick",
+  doubletap: "onDoubletap",
+  mapType_changed: "onMapTypeChanged",
+  mapTypeId_changed: "onMapTypeIdChanged",
+  mousedown: "onMousedown",
+  mousemove: "onMousemove",
+  mouseout: "onMouseout",
+  mouseover: "onMouseover",
+  mouseup: "onMouseup",
+  panning: "onPanning",
+  pinch: "onPinch",
+  pinch_start: "onPinchStart",
+  projection_changed: "onProjectionChanged",
+  removeLayer: "onRemoveLayer",
+  size_changed: "onSizeChanged",
+} as const;
+
+type EventKey = keyof typeof EVENT_TO_PROP;
+type PropKey = (typeof EVENT_TO_PROP)[EventKey];
+
 interface MapCallbacks {
-  load?: (map: naver.maps.Map) => void;
-  zoomstart?: (map: naver.maps.Map) => void;
-  zoomend?: (map: naver.maps.Map) => void;
-  dragstart?: (map: naver.maps.Map) => void;
-  dragend?: (map: naver.maps.Map) => void;
-  idle?: (event: "idle", map: naver.maps.Map) => void;
-  resize?: (event: "resize", map: naver.maps.Map) => void;
-  scroll?: (event: "scroll", map: naver.maps.Map) => void;
+  addLayer?: (layer: naver.maps.Layer) => void;
+  center_changed?: (center: naver.maps.Coord) => void;
+  centerPoint_changed?: (centerPoint: naver.maps.LatLng) => void;
+  click?: (event: naver.maps.PointerEvent) => void;
+  dbclick?: (event: naver.maps.PointerEvent) => void;
+  doubletap?: (event: naver.maps.PointerEvent) => void;
+  bounds_changed?: (bounds: naver.maps.Bounds) => void;
+  zoomstart?: () => void;
+  zoomend?: () => void;
+  zoom_changed?: (zoom: number) => void;
+  drag?: (event: naver.maps.PointerEvent) => void;
+  dragstart?: (event: naver.maps.PointerEvent) => void;
+  dragend?: (event: naver.maps.PointerEvent) => void;
+  idle?: () => void;
+  init?: () => void;
+  scroll?: () => void;
+  rightclick?: (event: naver.maps.PointerEvent) => void;
+  tap?: (event: naver.maps.PointerEvent) => void;
+  tiles_loaded?: () => void;
+  touchend?: (event: naver.maps.PointerEvent) => void;
+  touchstart?: (event: naver.maps.PointerEvent) => void;
+  touchmove?: (event: naver.maps.PointerEvent) => void;
+  twofintertap?: (event: naver.maps.PointerEvent) => void;
+  keydown?: (event: naver.maps.DOMEvent) => void;
+  keyup?: (event: naver.maps.DOMEvent) => void;
+  longtap?: (event: naver.maps.PointerEvent) => void;
+  mapType_changed?: (mapType: naver.maps.MapType) => void;
+  mapTypeId_changed?: (mapTypeId: naver.maps.MapTypeId) => void;
+  mousedown?: (event: naver.maps.PointerEvent) => void;
+  mousemove?: (event: naver.maps.PointerEvent) => void;
+  mouseout?: (event: naver.maps.PointerEvent) => void;
+  mouseover?: (event: naver.maps.PointerEvent) => void;
+  mouseup?: (event: naver.maps.PointerEvent) => void;
+  panning?: () => void;
+  pinch?: (event: naver.maps.PointerEvent) => void;
+  pinch_start?: (event: naver.maps.PointerEvent) => void;
+  projection_changed?: (projection: naver.maps.Projection) => void;
+  removeLayer?: (layerName: naver.maps.Layer["name"]) => void;
+  resize?: () => void;
+  size_changed?: (size: naver.maps.Size) => void;
 }
 
-export interface MapProps {
+type HandlerOfProp<P extends PropKey> = MapCallbacks[{
+  [E in EventKey]: (typeof EVENT_TO_PROP)[E] extends P ? E : never;
+}[EventKey]];
+
+type MapEventProps = {
+  [P in PropKey]?: HandlerOfProp<P>;
+};
+
+export interface MapProps extends MapEventProps {
   ncpKeyId: string;
   id?: string;
   mapTypeId?: naver.maps.MapTypeId;
@@ -32,14 +106,6 @@ export interface MapProps {
   children: ReactNode;
   submodules?: NaverMapsSubmodule[];
   style?: React.CSSProperties;
-  onLoad?: MapCallbacks["load"];
-  onZoomStart?: MapCallbacks["zoomstart"];
-  onZoomEnd?: MapCallbacks["zoomend"];
-  onDragEnd?: MapCallbacks["dragend"];
-  onDragStart?: MapCallbacks["dragstart"];
-  onIdle?: MapCallbacks["idle"];
-  onResize?: MapCallbacks["resize"];
-  onScroll?: MapCallbacks["scroll"];
 }
 
 const Map = forwardRef<naver.maps.Map, MapProps>(
@@ -52,14 +118,7 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       mapOptions,
       submodules = [],
       style,
-      onLoad = () => {},
-      onZoomStart = () => {},
-      onZoomEnd = () => {},
-      onDragStart = () => {},
-      onDragEnd = () => {},
-      onIdle = () => {},
-      onResize = () => {},
-      onScroll = () => {},
+      ...eventProps
     }: MapProps,
     ref: React.Ref<naver.maps.Map | undefined>
   ) => {
@@ -86,29 +145,20 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       };
     }, [isScriptLoaded]);
 
-    const callbacksRef = useRef<MapCallbacks>({});
+    const handlersRef = useRef<
+      Partial<Record<EventKey, (...args: unknown[]) => void>>
+    >({});
 
     useEffect(() => {
-      callbacksRef.current = {
-        load: onLoad,
-        zoomstart: onZoomStart,
-        zoomend: onZoomEnd,
-        dragend: onDragEnd,
-        dragstart: onDragStart,
-        idle: onIdle,
-        resize: onResize,
-        scroll: onScroll,
-      };
-    }, [
-      onLoad,
-      onZoomStart,
-      onZoomEnd,
-      onDragEnd,
-      onDragStart,
-      onIdle,
-      onResize,
-      onScroll,
-    ]);
+      const next: Partial<Record<EventKey, (...args: unknown[]) => void>> = {};
+      (Object.keys(EVENT_TO_PROP) as EventKey[]).forEach((eventKey) => {
+        const propKey = EVENT_TO_PROP[eventKey];
+        const fn = (eventProps as MapEventProps)[propKey];
+        if (typeof fn === "function")
+          next[eventKey] = fn as (...args: unknown[]) => void;
+      });
+      handlersRef.current = next;
+    }, [eventProps]);
 
     useEffect(() => {
       if (!mapInstance) return;
@@ -117,24 +167,19 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
 
     useEffect(() => {
       if (!mapInstance) return;
-      const listeners: naver.maps.MapEventListener[] = [];
-      Object.keys(callbacksRef.current).forEach((key) => {
-        const listener = mapInstance.addListener(key, (...args: unknown[]) => {
-          const callback = callbacksRef.current[key as keyof MapCallbacks] as
-            | ((...args: unknown[]) => void)
-            | undefined;
-          if (callback) {
-            callback(...args);
-          }
-        });
-        listeners.push(listener);
-      });
 
-      return () => {
-        listeners.forEach((listener) => {
-          mapInstance.removeListener(listener);
-        });
-      };
+      const disposers: Array<() => void> = [];
+      (Object.keys(EVENT_TO_PROP) as EventKey[]).forEach((eventKey) => {
+        const listener = naver.maps.Event.addListener(
+          mapInstance,
+          eventKey,
+          (...args: unknown[]) => {
+            handlersRef.current[eventKey]?.(...args);
+          }
+        );
+        disposers.push(() => naver.maps.Event.removeListener(listener));
+      });
+      return () => disposers.forEach((d) => d());
     }, [mapInstance]);
 
     useEffect(() => {

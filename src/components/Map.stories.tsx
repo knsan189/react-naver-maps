@@ -95,7 +95,7 @@ export const WithEventHandlers: Story = {
     ncpKeyId: NCP_KEY_ID,
     mapOptions: MAP_OPTIONS,
     submodules: ["gl"],
-    onLoad: action("onLoad"),
+    onInit: action("onInit"),
     onZoomStart: action("onZoomStart"),
     onZoomEnd: action("onZoomEnd"),
     onDragStart: action("onDragStart"),

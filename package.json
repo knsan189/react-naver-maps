@@ -1,6 +1,6 @@
 {
   "name": "@rousen/react-naver-maps",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "React library for Naver Maps",
   "type": "module",
   "main": "./dist/index.js",
