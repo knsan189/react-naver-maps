@@ -80,7 +80,9 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       return () => {
         mountedMapContext.onUnmount(id);
         contextValueRef.current = undefined;
-        newInstance.destroy();
+        queueMicrotask(() => {
+          newInstance.destroy();
+        });
       };
     }, [isScriptLoaded]);
 
