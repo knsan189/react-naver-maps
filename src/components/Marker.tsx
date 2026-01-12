@@ -65,7 +65,6 @@ const Marker = ({
   useEffect(() => {
     if (!instance) return;
     const handlers: naver.maps.MapEventListener[] = [];
-
     Object.entries(callbacksRef.current).forEach(([key, value]) => {
       if (!value) return;
       handlers.push(instance.addListener(key, value));

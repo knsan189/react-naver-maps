@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMap } from "./MapProvider";
 
-export interface PolylineProps
-  extends Omit<naver.maps.PolylineOptions, "path"> {
-  path: number[][];
+export interface PolylineProps extends naver.maps.PolylineOptions {
   onClick?: PolylineCallbacks["click"];
   onMouseEnter?: PolylineCallbacks["mouseenter"];
 }
@@ -14,14 +12,9 @@ interface PolylineCallbacks {
 }
 
 const Polyline = ({
-  path,
-  strokeColor,
-  strokeWeight,
-  strokeLineCap,
-  strokeLineJoin,
-  clickable,
   onClick,
   onMouseEnter = () => {},
+  ...options
 }: PolylineProps) => {
   const { current: map } = useMap();
 
@@ -42,7 +35,6 @@ const Polyline = ({
     if (!instance) return;
 
     const handlers: naver.maps.MapEventListener[] = [];
-
     (Object.keys(callbacksRef.current) as (keyof PolylineCallbacks)[]).forEach(
       (key) => {
         const listener = instance.addListener(key, (...args: unknown[]) => {
@@ -64,29 +56,15 @@ const Polyline = ({
 
   useEffect(() => {
     if (!map) return;
-    const newPoyline = new naver.maps.Polyline({
-      path: path.map(([lon, lat]) => new naver.maps.LatLng(lat, lon)),
-      strokeColor,
-      strokeWeight,
-      strokeLineCap,
-      strokeLineJoin,
-      clickable,
-    });
+    const newPoyline = new naver.maps.Polyline(options);
     newPoyline.setMap(map);
     setInstance(newPoyline);
     return () => {
       if (!map) return;
       newPoyline.setMap(null);
     };
-  }, [
-    map,
-    path,
-    strokeColor,
-    clickable,
-    strokeWeight,
-    strokeLineCap,
-    strokeLineJoin,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map]);
 
   return null;
 };
