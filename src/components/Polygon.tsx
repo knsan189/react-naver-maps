@@ -48,8 +48,6 @@ const Polygon = ({
     setInstance(newInstance);
     return () => {
       newInstance.setMap(null);
-      newInstance.onRemove();
-      setInstance(null);
     };
   }, [map]);
 

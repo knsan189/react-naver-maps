@@ -24,6 +24,7 @@ const Polyline = ({
   onMouseEnter = () => {},
 }: PolylineProps) => {
   const { current: map } = useMap();
+
   const [instance, setInstance] = useState<null | naver.maps.Polyline>(null);
   const callbacksRef = useRef<PolylineCallbacks>({
     click: onClick,
@@ -64,7 +65,6 @@ const Polyline = ({
     setInstance(newPoyline);
     return () => {
       newPoyline.setMap(null);
-      newPoyline.onRemove();
     };
   }, [
     map,
