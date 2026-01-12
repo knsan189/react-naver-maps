@@ -15,6 +15,18 @@ import { MountedMapContext } from "./MapProvider";
 import useScriptLoader from "../hooks/useScriptLoader";
 
 export const MapContext = createContext<naver.maps.Map | undefined>(undefined);
+
+interface MapCallbacks {
+  load?: (map: naver.maps.Map) => void;
+  zoomstart?: (map: naver.maps.Map) => void;
+  zoomend?: (map: naver.maps.Map) => void;
+  dragstart?: (map: naver.maps.Map) => void;
+  dragend?: (map: naver.maps.Map) => void;
+  idle?: (event: "idle", map: naver.maps.Map) => void;
+  resize?: (event: "resize", map: naver.maps.Map) => void;
+  scroll?: (event: "scroll", map: naver.maps.Map) => void;
+}
+
 export interface MapProps {
   ncpKeyId: string;
   id?: string;
@@ -23,19 +35,14 @@ export interface MapProps {
   children: ReactNode;
   submodules?: NaverMapsSubmodule[];
   style?: React.CSSProperties;
-  onLoad?: (map: naver.maps.Map) => void;
-  onZoomStart?: (map: naver.maps.Map) => void;
-  onZoomEnd?: (map: naver.maps.Map) => void;
-  onDragEnd?: (map: naver.maps.Map) => void;
-  onDragStart?: (map: naver.maps.Map) => void;
-}
-
-interface MapCallbacks {
-  load?: (map: naver.maps.Map) => void;
-  zoomstart?: (map: naver.maps.Map) => void;
-  zoomend?: (map: naver.maps.Map) => void;
-  dragstart?: (map: naver.maps.Map) => void;
-  dragend?: (map: naver.maps.Map) => void;
+  onLoad?: MapCallbacks["load"];
+  onZoomStart?: MapCallbacks["zoomstart"];
+  onZoomEnd?: MapCallbacks["zoomend"];
+  onDragEnd?: MapCallbacks["dragend"];
+  onDragStart?: MapCallbacks["dragstart"];
+  onIdle?: MapCallbacks["idle"];
+  onResize?: MapCallbacks["resize"];
+  onScroll?: MapCallbacks["scroll"];
 }
 
 const Map = forwardRef<naver.maps.Map, MapProps>(
@@ -53,6 +60,9 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       onZoomEnd = () => {},
       onDragStart = () => {},
       onDragEnd = () => {},
+      onIdle = () => {},
+      onResize = () => {},
+      onScroll = () => {},
     }: MapProps,
     ref: React.Ref<naver.maps.Map | undefined>
   ) => {
@@ -86,8 +96,19 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
         zoomend: onZoomEnd,
         dragend: onDragEnd,
         dragstart: onDragStart,
+        idle: onIdle,
+        resize: onResize,
+        scroll: onScroll,
       };
-    }, [onLoad, onZoomStart, onDragEnd, onDragStart]);
+    }, [
+      onLoad,
+      onZoomStart,
+      onDragEnd,
+      onDragStart,
+      onIdle,
+      onResize,
+      onScroll,
+    ]);
 
     useEffect(() => {
       if (!mapInstance) return;
