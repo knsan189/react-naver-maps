@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
-import { useMap } from "..";
+import { useMap } from "./MapProvider";
 
 interface MarkerClickEvent extends naver.maps.PointerEvent {
   overlay: naver.maps.Marker;

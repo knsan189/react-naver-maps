@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { useMap } from "..";
+import { useMap } from "./MapProvider";
 import createCustomOverlayClass, {
   CustomOverlayCtor,
   type OverlayAnchorType,

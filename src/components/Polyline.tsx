@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useMap } from "..";
+import { useMap } from "./MapProvider";
 
 export interface PolylineProps
   extends Omit<naver.maps.PolylineOptions, "path"> {

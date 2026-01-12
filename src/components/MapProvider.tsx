@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from "react";
 import { createContext } from "react";
-import { MapContext } from "./Map";
 
 export interface MountedMapContextType {
   maps: { [id: string]: naver.maps.Map };
@@ -60,3 +59,5 @@ export const useMap = () => {
 };
 
 export default MapProvider;
+
+export const MapContext = createContext<naver.maps.Map | undefined>(undefined);

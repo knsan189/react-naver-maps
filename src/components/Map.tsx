@@ -5,16 +5,13 @@ import {
   useMemo,
   useState,
   ReactNode,
-  createContext,
   forwardRef,
   useRef,
   useImperativeHandle,
 } from "react";
 import { NaverMapsSubmodule } from "../utils/scriptLoader";
-import { MountedMapContext } from "./MapProvider";
+import { MapContext, MountedMapContext } from "./MapProvider";
 import useScriptLoader from "../hooks/useScriptLoader";
-
-export const MapContext = createContext<naver.maps.Map | undefined>(undefined);
 
 interface MapCallbacks {
   load?: (map: naver.maps.Map) => void;
