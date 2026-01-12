@@ -5,11 +5,11 @@
 ## 설치
 
 ```bash
-npm install react-naver-maps
+npm install @rousen/react-naver-maps
 # 또는
-yarn add react-naver-maps
+yarn add @rousen/react-naver-maps
 # 또는
-pnpm add react-naver-maps
+pnpm add @rousen/react-naver-maps
 ```
 
 ## 사용법
@@ -39,13 +39,13 @@ import { Map, MapProvider, Marker, useMap } from "react-naver-maps";
 
 function MyComponent() {
   const { current } = useMap(); // 현재 맵 인스턴스 접근
-  
+
   const handleClick = () => {
     if (current) {
       current.setCenter(new naver.maps.LatLng(37.4979, 127.0276));
     }
   };
-  
+
   return <button onClick={handleClick}>중심 이동</button>;
 }
 ```
@@ -62,12 +62,12 @@ function MyComponent() {
 
 ```tsx
 interface MapProps {
-  ncpKeyId: string;                    // 필수: NCP 클라이언트 ID
-  id?: string;                         // 맵 인스턴스 ID (여러 맵 관리 시 사용)
-  mapTypeId?: naver.maps.MapTypeId;    // 지도 타입 (기본값: "normal")
-  mapOptions?: naver.maps.MapOptions;  // 네이버 맵 옵션
-  submodules?: NaverMapsSubmodule[];  // 서브모듈 (gl, traffic, transit 등)
-  style?: React.CSSProperties;         // 컨테이너 스타일
+  ncpKeyId: string; // 필수: NCP 클라이언트 ID
+  id?: string; // 맵 인스턴스 ID (여러 맵 관리 시 사용)
+  mapTypeId?: naver.maps.MapTypeId; // 지도 타입 (기본값: "normal")
+  mapOptions?: naver.maps.MapOptions; // 네이버 맵 옵션
+  submodules?: NaverMapsSubmodule[]; // 서브모듈 (gl, traffic, transit 등)
+  style?: React.CSSProperties; // 컨테이너 스타일
   onLoad?: (map: naver.maps.Map) => void;
   onZoomStart?: (map: naver.maps.Map) => void;
   onZoomEnd?: (map: naver.maps.Map) => void;
@@ -90,11 +90,7 @@ interface MapProps {
 ### Overlay 컴포넌트 예제
 
 ```tsx
-<Overlay
-  position={[127.0276, 37.4979]}
-  zIndex={100}
-  anchor="center"
->
+<Overlay position={[127.0276, 37.4979]} zIndex={100} anchor="center">
   <div style={{ background: "white", padding: "10px" }}>
     커스텀 오버레이 내용
   </div>
