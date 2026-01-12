@@ -26,6 +26,7 @@ const Polyline = ({
   const { current: map } = useMap();
 
   const [instance, setInstance] = useState<null | naver.maps.Polyline>(null);
+
   const callbacksRef = useRef<PolylineCallbacks>({
     click: onClick,
   });
@@ -39,15 +40,25 @@ const Polyline = ({
 
   useEffect(() => {
     if (!instance) return;
+
     const handlers: naver.maps.MapEventListener[] = [];
 
-    Object.entries(callbacksRef.current).forEach(([key, value]) => {
-      if (!value) return;
-      handlers.push(instance.addListener(key, value));
-    });
+    (Object.keys(callbacksRef.current) as (keyof PolylineCallbacks)[]).forEach(
+      (key) => {
+        const listener = instance.addListener(key, (...args: unknown[]) => {
+          const callback = callbacksRef.current[
+            key as keyof PolylineCallbacks
+          ] as ((...args: unknown[]) => void) | undefined;
+          if (callback) {
+            callback(...args);
+          }
+        });
+        handlers.push(listener);
+      }
+    );
 
     return () => {
-      handlers.forEach((handler) => instance.removeListener(handler));
+      handlers.forEach((h) => naver.maps.Event.removeListener(h));
     };
   }, [instance]);
 
@@ -64,6 +75,7 @@ const Polyline = ({
     newPoyline.setMap(map);
     setInstance(newPoyline);
     return () => {
+      if (!map) return;
       newPoyline.setMap(null);
     };
   }, [

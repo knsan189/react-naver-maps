@@ -36,6 +36,7 @@ const Marker = ({
     setInstance(newInstance);
     newInstance.setMap(map);
     return () => {
+      if (!map) return;
       newInstance.setMap(null);
     };
   }, [map]);
