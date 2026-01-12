@@ -103,6 +103,7 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
     }, [
       onLoad,
       onZoomStart,
+      onZoomEnd,
       onDragEnd,
       onDragStart,
       onIdle,
@@ -118,10 +119,18 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
     useEffect(() => {
       if (!mapInstance) return;
       const listeners: naver.maps.MapEventListener[] = [];
-      Object.entries(callbacksRef.current).forEach(([event, callback]) => {
-        const listener = mapInstance.addListener(event, callback);
+      Object.keys(callbacksRef.current).forEach((key) => {
+        const listener = mapInstance.addListener(key, (...args: unknown[]) => {
+          const callback = callbacksRef.current[key as keyof MapCallbacks] as
+            | ((...args: unknown[]) => void)
+            | undefined;
+          if (callback) {
+            callback(...args);
+          }
+        });
         listeners.push(listener);
       });
+
       return () => {
         listeners.forEach((listener) => {
           mapInstance.removeListener(listener);
