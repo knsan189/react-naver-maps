@@ -103,7 +103,7 @@ export interface MapProps extends MapEventProps {
   id?: string;
   mapTypeId?: naver.maps.MapTypeId;
   mapOptions?: naver.maps.MapOptions;
-  children: ReactNode;
+  children?: ReactNode;
   submodules?: NaverMapsSubmodule[];
   style?: React.CSSProperties;
 }

@@ -18,7 +18,7 @@
     "@docusaurus/core": "3.9.2",
     "@docusaurus/preset-classic": "3.9.2",
     "@mdx-js/react": "^3.0.0",
-    "@rousen/react-naver-maps": "file:..",
+    "@rousen/react-naver-maps": "latest",
     "@types/navermaps": "^3.9.1",
     "clsx": "^2.0.0",
     "prism-react-renderer": "^2.3.0",
