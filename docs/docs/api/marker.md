@@ -46,8 +46,10 @@ function App() {
 | `onClick`            | `(event: naver.maps.PointerEvent) => void`  | 마커 클릭 시             |
 | `onDblclick`         | `(event: naver.maps.PointerEvent) => void`  | 마커 더블 클릭 시        |
 | `onRightclick`       | `(event: naver.maps.PointerEvent) => void`  | 마커 우클릭 시           |
-| `onMousedown`        | `(event: naver.maps.PointerEvent) => void`  | 마우스 버튼 누를 때      |
-| `onMouseup`          | `(event: naver.maps.PointerEvent) => void`  | 마우스 버튼 뗄 때        |
+| `onMouseDown`        | `(event: naver.maps.PointerEvent) => void`  | 마우스 버튼 누를 때      |
+| `onMouseUp`          | `(event: naver.maps.PointerEvent) => void`  | 마우스 버튼 뗄 때        |
+| `onMouseOver`        | `(event: naver.maps.PointerEvent) => void`  | 마우스 진입 시           |
+| `onMouseOut`         | `(event: naver.maps.PointerEvent) => void`  | 마우스 나갈 시           |
 | `onTouchStart`       | `(event: naver.maps.PointerEvent) => void`  | 터치 시작 시 (모바일)    |
 | `onTouchEnd`         | `(event: naver.maps.PointerEvent) => void`  | 터치 종료 시 (모바일)    |
 | `onPositionChanged`  | `(position: naver.maps.Coord) => void`      | 위치 변경 시             |

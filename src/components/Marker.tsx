@@ -65,9 +65,9 @@ type MarkerEventProps = {
   [P in PropKey]?: HandlerOfProp<P>;
 };
 
-export interface MarkerProps
-  extends naver.maps.MarkerOptions,
-    MarkerEventProps {}
+type BaseMarkerProps = Omit<naver.maps.MarkerOptions, "map">;
+
+export interface MarkerProps extends BaseMarkerProps, MarkerEventProps {}
 
 const Marker = forwardRef<naver.maps.Marker, MarkerProps>(
   (
