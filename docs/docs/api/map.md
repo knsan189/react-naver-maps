@@ -173,6 +173,95 @@ import { Map } from "@rousen/react-naver-maps";
 <Map ncpKeyId="your-ncp-key-id" submodules={["gl", "traffic"]} />;
 ```
 
+### GL 서브모듈 사용
+
+GL 서브모듈은 WebGL 기반의 고성능 렌더링을 제공합니다. 많은 수의 오버레이(Polyline, Polygon 등)를 효율적으로 렌더링할 때 유용합니다.
+
+#### GL 설정 방법
+
+`submodules` prop에 `"gl"`을 추가하고, `mapOptions`에 `gl: true`를 설정합니다:
+
+```tsx
+import { Map } from "@rousen/react-naver-maps";
+
+<Map
+  ncpKeyId="your-ncp-key-id"
+  submodules={["gl"]}
+  mapOptions={{
+    center: { x: 127.0276, y: 37.4979 },
+    zoom: 13,
+    gl: true,
+  }}
+/>;
+```
+
+#### GL 서브모듈의 장점
+
+- **고성능 렌더링**: WebGL을 활용하여 많은 수의 오버레이를 효율적으로 렌더링
+- **부드러운 애니메이션**: 대량의 데이터를 다룰 때도 부드러운 성능 유지
+- **메모리 효율성**: GPU 가속을 통한 메모리 사용 최적화
+
+#### 사용 사례
+
+GL 서브모듈은 다음과 같은 경우에 특히 유용합니다:
+
+- 수백 개 이상의 Polyline을 동시에 표시해야 할 때
+- 실시간으로 업데이트되는 경로 데이터를 표시할 때
+- 복잡한 경로 네트워크를 시각화할 때
+
+#### 예제: GL과 함께 Polyline 사용
+
+```tsx
+import { Map, Polyline } from "@rousen/react-naver-maps";
+import { useState, useEffect } from "react";
+
+function GLPolylineExample() {
+  const [paths, setPaths] = useState<Array<Array<{ x: number; y: number }>>>(
+    []
+  );
+
+  useEffect(() => {
+    // 많은 수의 경로 생성
+    const generatedPaths: Array<Array<{ x: number; y: number }>> = [];
+    for (let i = 0; i < 100; i++) {
+      const path: Array<{ x: number; y: number }> = [];
+      for (let j = 0; j < 10; j++) {
+        path.push({
+          x: 127.0276 + (Math.random() - 0.5) * 0.1,
+          y: 37.4979 + (Math.random() - 0.5) * 0.1,
+        });
+      }
+      generatedPaths.push(path);
+    }
+    setPaths(generatedPaths);
+  }, []);
+
+  return (
+    <Map
+      ncpKeyId="your-ncp-key-id"
+      submodules={["gl"]}
+      mapOptions={{
+        center: { x: 127.0276, y: 37.4979 },
+        zoom: 13,
+        gl: true,
+      }}
+    >
+      {paths.map((path, index) => (
+        <Polyline
+          key={index}
+          path={path}
+          strokeColor={`hsl(${(index * 10) % 360}, 70%, 50%)`}
+          strokeWeight={2}
+          strokeOpacity={0.7}
+        />
+      ))}
+    </Map>
+  );
+}
+```
+
+> **참고**: GL 서브모듈 사용 예제는 [GL 예제](/docs/examples/gl-example)에서 더 자세히 확인할 수 있습니다.
+
 ### ref 사용
 
 `Map` 컴포넌트는 `forwardRef`를 사용하므로 ref를 통해 네이버 지도 인스턴스에 직접 접근할 수 있습니다:

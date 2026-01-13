@@ -1,4 +1,4 @@
-import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -14,29 +14,30 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
  */
 const sidebars: SidebarsConfig = {
   tutorialSidebar: [
-    'intro',
-    'installation',
+    "intro",
+    "installation",
     {
-      type: 'category',
-      label: 'API 참조',
+      type: "category",
+      label: "API 참조",
       items: [
-        'api/map',
-        'api/marker',
-        'api/overlay',
-        'api/polygon',
-        'api/polyline',
+        "api/map",
+        "api/marker",
+        "api/overlay",
+        "api/polygon",
+        "api/polyline",
       ],
     },
     {
-      type: 'category',
-      label: '예제',
+      type: "category",
+      label: "예제",
       items: [
-        'examples/basic-map',
-        'examples/marker-example',
-        'examples/overlay-example',
-        'examples/polygon-polyline-example',
-        'examples/interactive-map',
-        'examples/complete-example',
+        "examples/basic-map",
+        "examples/marker-example",
+        "examples/overlay-example",
+        "examples/polygon-polyline-example",
+        "examples/interactive-map",
+        "examples/complete-example",
+        "examples/gl-example",
       ],
     },
   ],
