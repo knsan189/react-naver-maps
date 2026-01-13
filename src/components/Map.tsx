@@ -129,6 +129,10 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
 
     const { isScriptLoaded } = useScriptLoader({ ncpKeyId, submodules });
 
+    const keyedMapOptions = useMemo(() => {
+      return JSON.stringify(mapOptions) || "";
+    }, [mapOptions]);
+
     useEffect(() => {
       if (!isScriptLoaded || !containerRef.current) return;
       const newInstance = new naver.maps.Map(containerRef.current, mapOptions);
@@ -186,14 +190,10 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       mapInstance.setMapTypeId(mapTypeId);
     }, [mapInstance, mapTypeId]);
 
-    const memoizedMapOptions = useMemo(() => {
-      return mapOptions || {};
-    }, [mapOptions]);
-
     useEffect(() => {
       if (!mapInstance) return;
-      mapInstance.setOptions(memoizedMapOptions);
-    }, [mapInstance, memoizedMapOptions]);
+      mapInstance.setOptions(JSON.parse(keyedMapOptions));
+    }, [mapInstance, keyedMapOptions]);
 
     useImperativeHandle(ref, () => contextValueRef.current, [mapInstance]);
 
