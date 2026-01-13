@@ -6,6 +6,7 @@
     "type": "git",
     "url": "https://github.com/knsan189/react-naver-maps"
   },
+  "homepage": "https://knsan189.github.io/react-naver-maps",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",

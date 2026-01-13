@@ -6,6 +6,7 @@ import {
   MarkerExample,
   MultipleMarkersExample,
 } from "@site/src/components/MapExample";
+import BrowserOnly from "@docusaurus/BrowserOnly";
 
 # 마커 예제
 
@@ -13,7 +14,7 @@ import {
 
 ## 단일 마커
 
-<MarkerExample />
+<BrowserOnly>{() => <MarkerExample />}</BrowserOnly>
 
 ### 코드
 
@@ -35,7 +36,7 @@ export default SingleMarker;
 
 ## 여러 마커
 
-<MultipleMarkersExample />
+<BrowserOnly>{() => <MultipleMarkersExample />}</BrowserOnly>
 
 ### 코드
 

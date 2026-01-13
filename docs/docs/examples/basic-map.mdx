@@ -3,6 +3,7 @@ sidebar_position: 1
 ---
 
 import { BasicMapExample } from "@site/src/components/MapExample";
+import BrowserOnly from "@docusaurus/BrowserOnly";
 
 # 기본 지도 예제
 
@@ -10,7 +11,7 @@ import { BasicMapExample } from "@site/src/components/MapExample";
 
 ## 라이브 예제
 
-<BasicMapExample />
+<BrowserOnly>{() => <BasicMapExample />}</BrowserOnly>
 
 ## 코드
 
