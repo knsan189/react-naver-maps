@@ -124,7 +124,6 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
   ) => {
     const mountedMapContext = useContext(MountedMapContext);
     const containerRef = useRef<HTMLDivElement>(null);
-
     const [mapInstance, setMapInstance] = useState<naver.maps.Map>();
     const contextValueRef = useRef<naver.maps.Map | undefined>(undefined);
 

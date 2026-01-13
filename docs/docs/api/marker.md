@@ -26,24 +26,38 @@ function App() {
 
 ### 주요 Props
 
-| Prop        | Type                                          | Description         |
-| ----------- | --------------------------------------------- | ------------------- |
-| `position`  | `naver.maps.Coord \| naver.maps.CoordLiteral` | 마커의 위치 (필수)  |
-| `icon`      | `naver.maps.Icon \| string`                   | 마커 아이콘         |
-| `title`     | `string`                                      | 마커 제목 (툴팁)    |
-| `zIndex`    | `number`                                      | 마커의 z-index      |
-| `clickable` | `boolean`                                     | 클릭 가능 여부      |
-| `visible`   | `boolean`                                     | 표시 여부           |
-| `cursor`    | `string`                                      | 마커 위 커서 스타일 |
+| Prop        | Type                                          | Default | Description         |
+| ----------- | --------------------------------------------- | ------- | ------------------- |
+| `position`  | `naver.maps.Coord \| naver.maps.CoordLiteral` | -       | 마커의 위치 (필수)  |
+| `icon`      | `naver.maps.Icon \| string`                   | -       | 마커 아이콘         |
+| `title`     | `string`                                      | -       | 마커 제목 (툴팁)    |
+| `zIndex`    | `number`                                      | -       | 마커의 z-index      |
+| `clickable` | `boolean`                                     | `false` | 클릭 가능 여부      |
+| `visible`   | `boolean`                                     | `true`  | 표시 여부           |
+| `cursor`    | `string`                                      | -       | 마커 위 커서 스타일 |
+| `draggable` | `boolean`                                     | `false` | 드래그 가능 여부    |
+| `animation` | `naver.maps.Animation`                        | -       | 마커 애니메이션     |
+| `shape`     | `naver.maps.MarkerShape`                      | -       | 마커 클릭 영역      |
 
 ### 이벤트 핸들러
 
-| Prop                | Type                                  | Description    |
-| ------------------- | ------------------------------------- | -------------- |
-| `onClick`           | `(event: MarkerClickEvent) => void`   | 마커 클릭 시   |
-| `onMouseEnter`      | `(marker: naver.maps.Marker) => void` | 마우스 진입 시 |
-| `onMouseLeave`      | `(marker: naver.maps.Marker) => void` | 마우스 나갈 시 |
-| `onPositionChanged` | `(marker: naver.maps.Marker) => void` | 위치 변경 시   |
+| Prop                 | Type                                        | Description              |
+| -------------------- | ------------------------------------------- | ------------------------ |
+| `onClick`            | `(event: naver.maps.PointerEvent) => void`  | 마커 클릭 시             |
+| `onDblclick`         | `(event: naver.maps.PointerEvent) => void`  | 마커 더블 클릭 시        |
+| `onRightclick`       | `(event: naver.maps.PointerEvent) => void`  | 마커 우클릭 시           |
+| `onMousedown`        | `(event: naver.maps.PointerEvent) => void`  | 마우스 버튼 누를 때      |
+| `onMouseup`          | `(event: naver.maps.PointerEvent) => void`  | 마우스 버튼 뗄 때        |
+| `onTouchStart`       | `(event: naver.maps.PointerEvent) => void`  | 터치 시작 시 (모바일)    |
+| `onTouchEnd`         | `(event: naver.maps.PointerEvent) => void`  | 터치 종료 시 (모바일)    |
+| `onPositionChanged`  | `(position: naver.maps.Coord) => void`      | 위치 변경 시             |
+| `onTitleChanged`     | `(title: string) => void`                   | 제목 변경 시             |
+| `onVisibleChanged`   | `(visible: boolean) => void`                | 표시 여부 변경 시        |
+| `onZIndexChanged`    | `(zIndex: number) => void`                  | z-index 변경 시          |
+| `onClickableChanged` | `(clickable: boolean) => void`              | 클릭 가능 여부 변경 시   |
+| `onDraggableChanged` | `(draggable: boolean) => void`              | 드래그 가능 여부 변경 시 |
+| `onIconChanged`      | `(icon: naver.maps.Icon \| string) => void` | 아이콘 변경 시           |
+| `onIconLoaded`       | `(marker: naver.maps.Marker) => void`       | 아이콘 로드 완료 시      |
 
 ## 예제
 
@@ -78,7 +92,55 @@ function App() {
     position={{ x: 127.0276, y: 37.4979 }}
     onClick={(event) => {
       console.log("마커 클릭:", event);
+      console.log("클릭 위치:", event.coord);
       alert("마커가 클릭되었습니다!");
+    }}
+  />
+</Map>
+```
+
+### 드래그 가능한 마커
+
+```tsx
+<Map ncpKeyId="your-ncp-key-id">
+  <Marker
+    position={{ x: 127.0276, y: 37.4979 }}
+    draggable={true}
+    onPositionChanged={(position) => {
+      console.log("마커 위치 변경:", position);
+    }}
+  />
+</Map>
+```
+
+### 애니메이션 마커
+
+```tsx
+<Map ncpKeyId="your-ncp-key-id">
+  <Marker
+    position={{ x: 127.0276, y: 37.4979 }}
+    animation={naver.maps.Animation.BOUNCE}
+  />
+</Map>
+```
+
+### 여러 이벤트 핸들러 사용
+
+```tsx
+<Map ncpKeyId="your-ncp-key-id">
+  <Marker
+    position={{ x: 127.0276, y: 37.4979 }}
+    onClick={(event) => {
+      console.log("클릭:", event.coord);
+    }}
+    onDblclick={(event) => {
+      console.log("더블 클릭:", event.coord);
+    }}
+    onRightclick={(event) => {
+      console.log("우클릭:", event.coord);
+    }}
+    onIconLoaded={(marker) => {
+      console.log("아이콘 로드 완료:", marker);
     }}
   />
 </Map>
