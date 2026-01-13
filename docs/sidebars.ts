@@ -27,6 +27,18 @@ const sidebars: SidebarsConfig = {
         'api/polyline',
       ],
     },
+    {
+      type: 'category',
+      label: '예제',
+      items: [
+        'examples/basic-map',
+        'examples/marker-example',
+        'examples/overlay-example',
+        'examples/polygon-polyline-example',
+        'examples/interactive-map',
+        'examples/complete-example',
+      ],
+    },
   ],
 };
 

@@ -1,0 +1,187 @@
+---
+sidebar_position: 3
+---
+
+import { OverlayExample } from "@site/src/components/MapExample";
+
+# 오버레이 예제
+
+React 컴포넌트를 지도 위에 오버레이로 표시하는 예제입니다.
+
+## 기본 정보창
+
+<OverlayExample />
+
+### 코드
+
+```tsx
+import { Map, Overlay } from "@rousen/react-naver-maps";
+
+function BasicOverlay() {
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map ncpKeyId="qeycp2mj4a">
+        <Overlay
+          position={{ x: 127.0276, y: 37.4979 }}
+          zIndex={100}
+          anchor="BOTTOM_CENTER"
+        >
+          <div
+            style={{
+              background: "white",
+              padding: "10px",
+              borderRadius: "5px",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
+            }}
+          >
+            강남역
+          </div>
+        </Overlay>
+      </Map>
+    </div>
+  );
+}
+
+export default BasicOverlay;
+```
+
+## 상세 정보창
+
+```tsx
+import { Map, Overlay } from "@rousen/react-naver-maps";
+
+function DetailedInfoWindow() {
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map ncpKeyId="qeycp2mj4a">
+        <Overlay
+          position={{ x: 127.0276, y: 37.4979 }}
+          zIndex={100}
+          anchor="BOTTOM_CENTER"
+        >
+          <div
+            style={{
+              background: "white",
+              padding: "15px",
+              borderRadius: "8px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              minWidth: "200px",
+            }}
+          >
+            <h3 style={{ margin: "0 0 10px 0", fontSize: "16px" }}>강남역</h3>
+            <p style={{ margin: "0 0 5px 0", color: "#666" }}>
+              서울특별시 강남구 테헤란로
+            </p>
+            <p style={{ margin: 0, color: "#666" }}>지하철 2호선</p>
+          </div>
+        </Overlay>
+      </Map>
+    </div>
+  );
+}
+
+export default DetailedInfoWindow;
+```
+
+## React 컴포넌트 오버레이
+
+```tsx
+import { Map, Overlay } from "@rousen/react-naver-maps";
+
+interface InfoWindowProps {
+  title: string;
+  address: string;
+  subway: string;
+}
+
+function InfoWindow({ title, address, subway }: InfoWindowProps) {
+  return (
+    <div
+      style={{
+        background: "white",
+        padding: "15px",
+        borderRadius: "8px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+        minWidth: "200px",
+      }}
+    >
+      <h3 style={{ margin: "0 0 10px 0", fontSize: "16px" }}>{title}</h3>
+      <p style={{ margin: "0 0 5px 0", color: "#666" }}>{address}</p>
+      <p style={{ margin: 0, color: "#666" }}>{subway}</p>
+    </div>
+  );
+}
+
+function ComponentOverlay() {
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map ncpKeyId="qeycp2mj4a">
+        <Overlay
+          position={{ x: 127.0276, y: 37.4979 }}
+          zIndex={100}
+          anchor="BOTTOM_CENTER"
+        >
+          <InfoWindow
+            title="강남역"
+            address="서울특별시 강남구 테헤란로"
+            subway="지하철 2호선"
+          />
+        </Overlay>
+      </Map>
+    </div>
+  );
+}
+
+export default ComponentOverlay;
+```
+
+## 여러 오버레이
+
+```tsx
+import { Map, Overlay } from "@rousen/react-naver-maps";
+
+function MultipleOverlays() {
+  const locations = [
+    {
+      position: { x: 127.0276, y: 37.4979 },
+      title: "강남역",
+      address: "서울특별시 강남구",
+    },
+    {
+      position: { x: 126.978, y: 37.5665 },
+      title: "서울역",
+      address: "서울특별시 중구",
+    },
+  ];
+
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map ncpKeyId="qeycp2mj4a">
+        {locations.map((location, index) => (
+          <Overlay
+            key={index}
+            position={location.position}
+            zIndex={100 + index}
+            anchor="BOTTOM_CENTER"
+          >
+            <div
+              style={{
+                background: "white",
+                padding: "10px",
+                borderRadius: "5px",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
+              }}
+            >
+              <strong>{location.title}</strong>
+              <br />
+              <small>{location.address}</small>
+            </div>
+          </Overlay>
+        ))}
+      </Map>
+    </div>
+  );
+}
+
+export default MultipleOverlays;
+```

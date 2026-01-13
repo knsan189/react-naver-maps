@@ -1,0 +1,116 @@
+---
+sidebar_position: 2
+---
+
+import {
+  MarkerExample,
+  MultipleMarkersExample,
+} from "@site/src/components/MapExample";
+
+# 마커 예제
+
+지도에 마커를 표시하는 다양한 예제입니다.
+
+## 단일 마커
+
+<MarkerExample />
+
+### 코드
+
+```tsx
+import { Map, Marker } from "@rousen/react-naver-maps";
+
+function SingleMarker() {
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map ncpKeyId="qeycp2mj4a">
+        <Marker position={{ x: 127.0276, y: 37.4979 }} />
+      </Map>
+    </div>
+  );
+}
+
+export default SingleMarker;
+```
+
+## 여러 마커
+
+<MultipleMarkersExample />
+
+### 코드
+
+```tsx
+import { Map, Marker } from "@rousen/react-naver-maps";
+
+function MultipleMarkers() {
+  const locations = [
+    { x: 127.0276, y: 37.4979, title: "강남역" },
+    { x: 126.978, y: 37.5665, title: "서울역" },
+    { x: 127.0276, y: 37.4979, title: "홍대입구" },
+  ];
+
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map ncpKeyId="qeycp2mj4a">
+        {locations.map((location, index) => (
+          <Marker
+            key={index}
+            position={{ x: location.x, y: location.y }}
+            title={location.title}
+          />
+        ))}
+      </Map>
+    </div>
+  );
+}
+
+export default MultipleMarkers;
+```
+
+## 마커 클릭 이벤트
+
+```tsx
+import { Map, Marker } from "@rousen/react-naver-maps";
+
+function MarkerWithClick() {
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map ncpKeyId="qeycp2mj4a">
+        <Marker
+          position={{ x: 127.0276, y: 37.4979 }}
+          onClick={(event) => {
+            alert(`마커가 클릭되었습니다!\n위치: ${event.coord}`);
+          }}
+        />
+      </Map>
+    </div>
+  );
+}
+
+export default MarkerWithClick;
+```
+
+## 커스텀 아이콘 마커
+
+```tsx
+import { Map, Marker } from "@rousen/react-naver-maps";
+
+function CustomIconMarker() {
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map ncpKeyId="qeycp2mj4a">
+        <Marker
+          position={{ x: 127.0276, y: 37.4979 }}
+          icon={{
+            url: "/path/to/custom-icon.png",
+            size: new naver.maps.Size(50, 50),
+            anchor: new naver.maps.Point(25, 25),
+          }}
+        />
+      </Map>
+    </div>
+  );
+}
+
+export default CustomIconMarker;
+```
