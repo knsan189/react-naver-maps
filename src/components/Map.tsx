@@ -186,10 +186,14 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       mapInstance.setMapTypeId(mapTypeId);
     }, [mapInstance, mapTypeId]);
 
+    const memoizedMapOptions = useMemo(() => {
+      return mapOptions || {};
+    }, [mapOptions]);
+
     useEffect(() => {
-      if (!mapInstance || !mapOptions) return;
-      mapInstance.setOptions(mapOptions);
-    }, [mapInstance, mapOptions]);
+      if (!mapInstance) return;
+      mapInstance.setOptions(memoizedMapOptions);
+    }, [mapInstance, memoizedMapOptions]);
 
     useImperativeHandle(ref, () => contextValueRef.current, [mapInstance]);
 
