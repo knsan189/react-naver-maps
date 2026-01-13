@@ -26,7 +26,7 @@ function ClickToAddMarker() {
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="qeycp2mj4a" onClick={handleMapClick}>
+      <Map ncpKeyId="your-ncp-key-id" onClick={handleMapClick}>
         {markers.map((marker) => (
           <Marker key={marker.id} position={{ x: marker.x, y: marker.y }} />
         ))}
@@ -49,7 +49,7 @@ function DraggableMarker() {
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="qeycp2mj4a">
+      <Map ncpKeyId="your-ncp-key-id">
         <Marker
           position={position}
           draggable={true}
@@ -86,7 +86,7 @@ function MapEvents() {
     <div>
       <div style={{ width: "100%", height: "400px" }}>
         <Map
-          ncpKeyId="qeycp2mj4a"
+          ncpKeyId="your-ncp-key-id"
           onClick={() => addEvent("지도 클릭")}
           onZoomStart={() => addEvent("줌 시작")}
           onZoomEnd={() => addEvent("줌 종료")}
@@ -160,7 +160,7 @@ function MapControls() {
         </button>
       </div>
       <div style={{ width: "100%", height: "400px" }}>
-        <Map ref={mapRef} ncpKeyId="qeycp2mj4a" />
+        <Map ref={mapRef} ncpKeyId="your-ncp-key-id" />
       </div>
     </div>
   );

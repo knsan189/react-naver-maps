@@ -24,7 +24,7 @@ import { Map, Marker } from "@rousen/react-naver-maps";
 function SingleMarker() {
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="qeycp2mj4a">
+      <Map ncpKeyId="your-ncp-key-id">
         <Marker position={{ x: 127.0276, y: 37.4979 }} />
       </Map>
     </div>
@@ -52,7 +52,7 @@ function MultipleMarkers() {
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="qeycp2mj4a">
+      <Map ncpKeyId="your-ncp-key-id">
         {locations.map((location, index) => (
           <Marker
             key={index}
@@ -76,7 +76,7 @@ import { Map, Marker } from "@rousen/react-naver-maps";
 function MarkerWithClick() {
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="qeycp2mj4a">
+      <Map ncpKeyId="your-ncp-key-id">
         <Marker
           position={{ x: 127.0276, y: 37.4979 }}
           onClick={(event) => {
@@ -99,7 +99,7 @@ import { Map, Marker } from "@rousen/react-naver-maps";
 function CustomIconMarker() {
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="qeycp2mj4a">
+      <Map ncpKeyId="your-ncp-key-id">
         <Marker
           position={{ x: 127.0276, y: 37.4979 }}
           icon={{

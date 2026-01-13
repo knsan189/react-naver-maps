@@ -26,24 +26,24 @@ function App() {
 
 ### 주요 Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `position` | `naver.maps.Coord \| naver.maps.CoordLiteral` | 마커의 위치 (필수) |
-| `icon` | `naver.maps.Icon \| string` | 마커 아이콘 |
-| `title` | `string` | 마커 제목 (툴팁) |
-| `zIndex` | `number` | 마커의 z-index |
-| `clickable` | `boolean` | 클릭 가능 여부 |
-| `visible` | `boolean` | 표시 여부 |
-| `cursor` | `string` | 마커 위 커서 스타일 |
+| Prop        | Type                                          | Description         |
+| ----------- | --------------------------------------------- | ------------------- |
+| `position`  | `naver.maps.Coord \| naver.maps.CoordLiteral` | 마커의 위치 (필수)  |
+| `icon`      | `naver.maps.Icon \| string`                   | 마커 아이콘         |
+| `title`     | `string`                                      | 마커 제목 (툴팁)    |
+| `zIndex`    | `number`                                      | 마커의 z-index      |
+| `clickable` | `boolean`                                     | 클릭 가능 여부      |
+| `visible`   | `boolean`                                     | 표시 여부           |
+| `cursor`    | `string`                                      | 마커 위 커서 스타일 |
 
 ### 이벤트 핸들러
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `onClick` | `(event: MarkerClickEvent) => void` | 마커 클릭 시 |
-| `onMouseEnter` | `(marker: naver.maps.Marker) => void` | 마우스 진입 시 |
-| `onMouseLeave` | `(marker: naver.maps.Marker) => void` | 마우스 나갈 시 |
-| `onPositionChanged` | `(marker: naver.maps.Marker) => void` | 위치 변경 시 |
+| Prop                | Type                                  | Description    |
+| ------------------- | ------------------------------------- | -------------- |
+| `onClick`           | `(event: MarkerClickEvent) => void`   | 마커 클릭 시   |
+| `onMouseEnter`      | `(marker: naver.maps.Marker) => void` | 마우스 진입 시 |
+| `onMouseLeave`      | `(marker: naver.maps.Marker) => void` | 마우스 나갈 시 |
+| `onPositionChanged` | `(marker: naver.maps.Marker) => void` | 위치 변경 시   |
 
 ## 예제
 
@@ -59,10 +59,10 @@ function App() {
 
 ```tsx
 <Map ncpKeyId="your-ncp-key-id">
-  <Marker 
+  <Marker
     position={{ x: 127.0276, y: 37.4979 }}
     icon={{
-      url: '/path/to/icon.png',
+      url: "/path/to/icon.png",
       size: new naver.maps.Size(32, 32),
       anchor: new naver.maps.Point(16, 16),
     }}
@@ -74,11 +74,11 @@ function App() {
 
 ```tsx
 <Map ncpKeyId="your-ncp-key-id">
-  <Marker 
+  <Marker
     position={{ x: 127.0276, y: 37.4979 }}
     onClick={(event) => {
-      console.log('마커 클릭:', event);
-      alert('마커가 클릭되었습니다!');
+      console.log("마커 클릭:", event);
+      alert("마커가 클릭되었습니다!");
     }}
   />
 </Map>
@@ -88,26 +88,26 @@ function App() {
 
 ```tsx
 const locations = [
-  { x: 127.0276, y: 37.4979, title: '위치 1' },
-  { x: 127.0286, y: 37.4989, title: '위치 2' },
-  { x: 127.0296, y: 37.4999, title: '위치 3' },
+  { x: 127.0276, y: 37.4979, title: "위치 1" },
+  { x: 127.0286, y: 37.4989, title: "위치 2" },
+  { x: 127.0296, y: 37.4999, title: "위치 3" },
 ];
 
 <Map ncpKeyId="your-ncp-key-id">
   {locations.map((location, index) => (
-    <Marker 
+    <Marker
       key={index}
       position={{ x: location.x, y: location.y }}
       title={location.title}
     />
   ))}
-</Map>
+</Map>;
 ```
 
 ### 동적 위치 변경
 
 ```tsx
-import { useState } from 'react';
+import { useState } from "react";
 
 function App() {
   const [position, setPosition] = useState({ x: 127.0276, y: 37.4979 });

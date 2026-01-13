@@ -20,7 +20,7 @@ import { Map, Overlay } from "@rousen/react-naver-maps";
 function BasicOverlay() {
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="qeycp2mj4a">
+      <Map ncpKeyId="your-ncp-key-id">
         <Overlay
           position={{ x: 127.0276, y: 37.4979 }}
           zIndex={100}
@@ -53,7 +53,7 @@ import { Map, Overlay } from "@rousen/react-naver-maps";
 function DetailedInfoWindow() {
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="qeycp2mj4a">
+      <Map ncpKeyId="your-ncp-key-id">
         <Overlay
           position={{ x: 127.0276, y: 37.4979 }}
           zIndex={100}
@@ -115,7 +115,7 @@ function InfoWindow({ title, address, subway }: InfoWindowProps) {
 function ComponentOverlay() {
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="qeycp2mj4a">
+      <Map ncpKeyId="your-ncp-key-id">
         <Overlay
           position={{ x: 127.0276, y: 37.4979 }}
           zIndex={100}
@@ -156,7 +156,7 @@ function MultipleOverlays() {
 
   return (
     <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="qeycp2mj4a">
+      <Map ncpKeyId="your-ncp-key-id">
         {locations.map((location, index) => (
           <Overlay
             key={index}

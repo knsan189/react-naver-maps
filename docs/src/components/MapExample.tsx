@@ -1,12 +1,22 @@
 import React from "react";
-import { Map, Marker, Overlay, Polygon, Polyline } from "@rousen/react-naver-maps";
+import {
+  Map,
+  Marker,
+  Overlay,
+  Polygon,
+  Polyline,
+} from "@rousen/react-naver-maps";
 
 interface MapExampleProps {
   ncpKeyId?: string;
   children?: React.ReactNode;
 }
 
-export function BasicMapExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps) {
+const defaultNcpKeyId = "qeycp2mj4a";
+
+export function BasicMapExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
       <Map ncpKeyId={ncpKeyId} />
@@ -14,7 +24,7 @@ export function BasicMapExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProp
   );
 }
 
-export function MarkerExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps) {
+export function MarkerExample({ ncpKeyId = defaultNcpKeyId }: MapExampleProps) {
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
       <Map ncpKeyId={ncpKeyId}>
@@ -24,10 +34,12 @@ export function MarkerExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps)
   );
 }
 
-export function MultipleMarkersExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps) {
+export function MultipleMarkersExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
   const locations = [
     { x: 127.0276, y: 37.4979, title: "강남역" },
-    { x: 126.9780, y: 37.5665, title: "서울역" },
+    { x: 126.978, y: 37.5665, title: "서울역" },
     { x: 126.9223, y: 37.5264, title: "홍대입구" },
   ];
 
@@ -46,14 +58,16 @@ export function MultipleMarkersExample({ ncpKeyId = "your-ncp-key-id" }: MapExam
   );
 }
 
-export function OverlayExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps) {
+export function OverlayExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
       <Map ncpKeyId={ncpKeyId}>
         <Overlay
           position={{ x: 127.0276, y: 37.4979 }}
           zIndex={100}
-          anchor="BOTTOM_CENTER"
+          anchor="bottom-center"
         >
           <div
             style={{
@@ -65,7 +79,9 @@ export function OverlayExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps
             }}
           >
             <h3 style={{ margin: "0 0 10px 0", fontSize: "16px" }}>강남역</h3>
-            <p style={{ margin: 0, color: "#666" }}>서울특별시 강남구 테헤란로</p>
+            <p style={{ margin: 0, color: "#666" }}>
+              서울특별시 강남구 테헤란로
+            </p>
           </div>
         </Overlay>
       </Map>
@@ -73,12 +89,14 @@ export function OverlayExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps
   );
 }
 
-export function PolygonExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps) {
-  const paths = [
-    { x: 127.0276, y: 37.4979 },
-    { x: 127.0286, y: 37.4979 },
-    { x: 127.0286, y: 37.4989 },
-    { x: 127.0276, y: 37.4989 },
+export function PolygonExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  const paths: naver.maps.ArrayOfCoordsLiteral[] = [
+    [{ x: 127.0276, y: 37.4979 }],
+    [{ x: 127.0286, y: 37.4979 }],
+    [{ x: 127.0286, y: 37.4989 }],
+    [{ x: 127.0276, y: 37.4989 }],
   ];
 
   return (
@@ -97,11 +115,13 @@ export function PolygonExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps
   );
 }
 
-export function PolylineExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps) {
-  const path = [
-    { x: 127.0276, y: 37.4979 },
-    { x: 127.0286, y: 37.4989 },
-    { x: 127.0296, y: 37.4999 },
+export function PolylineExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  const path: naver.maps.PointLiteral[] = [
+    [127.0276, 37.4979],
+    [127.0286, 37.4989],
+    [127.0296, 37.4999],
   ];
 
   return (
@@ -118,7 +138,9 @@ export function PolylineExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProp
   );
 }
 
-export function CompleteExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProps) {
+export function CompleteExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
   return (
     <div style={{ width: "100%", height: "500px", margin: "20px 0" }}>
       <Map
@@ -132,7 +154,7 @@ export function CompleteExample({ ncpKeyId = "your-ncp-key-id" }: MapExampleProp
         <Overlay
           position={{ x: 127.0276, y: 37.4979 }}
           zIndex={100}
-          anchor="BOTTOM_CENTER"
+          anchor="bottom-center"
         >
           <div
             style={{
