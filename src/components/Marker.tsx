@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { useMap } from "./MapProvider";
 
 const EVENT_TO_PROP = {
@@ -16,8 +22,10 @@ const EVENT_TO_PROP = {
   draggable_changed: "onDraggableChanged",
   icon_changed: "onIconChanged",
   icon_loaded: "onIconLoaded",
-  mousedown: "onMousedown",
-  mouseup: "onMouseup",
+  mousedown: "onMouseDown",
+  mouseup: "onMouseUp",
+  mouseover: "onMouseOver",
+  mouseout: "onMouseOut",
 } as const;
 
 type EventKey = keyof typeof EVENT_TO_PROP;
@@ -36,8 +44,6 @@ interface MarkerCallbacks {
       | naver.maps.HtmlIcon
   ) => void;
   icon_loaded?: (marker: naver.maps.Marker) => void;
-  mousedown?: (event: naver.maps.PointerEvent) => void;
-  mouseup?: (event: naver.maps.PointerEvent) => void;
   position_changed?: (position: naver.maps.Coord) => void;
   rightclick?: (event: naver.maps.PointerEvent) => void;
   title_changed?: (title: string) => void;
@@ -45,6 +51,10 @@ interface MarkerCallbacks {
   touchstart?: (event: naver.maps.PointerEvent) => void;
   visible_changed?: (visible: boolean) => void;
   zindex_changed?: (zIndex: number) => void;
+  mousedown?: (event: naver.maps.PointerEvent) => void;
+  mouseup?: (event: naver.maps.PointerEvent) => void;
+  mouseover?: (event: naver.maps.PointerEvent) => void;
+  mouseout?: (event: naver.maps.PointerEvent) => void;
 }
 
 type HandlerOfProp<P extends PropKey> = MarkerCallbacks[{
@@ -59,127 +69,134 @@ export interface MarkerProps
   extends naver.maps.MarkerOptions,
     MarkerEventProps {}
 
-const Marker = ({
-  position,
-  zIndex,
-  animation,
-  clickable = false,
-  cursor,
-  draggable = false,
-  icon,
-  shape,
-  title,
-  visible = true,
-  ...eventProps
-}: MarkerProps) => {
-  const { current: map } = useMap();
-  const [instance, setInstance] = useState<naver.maps.Marker>();
-
-  useEffect(() => {
-    if (!map) return undefined;
-    const newInstance = new naver.maps.Marker({
+const Marker = forwardRef<naver.maps.Marker, MarkerProps>(
+  (
+    {
       position,
       zIndex,
       animation,
-      clickable,
+      clickable = false,
       cursor,
-      draggable,
+      draggable = false,
       icon,
       shape,
       title,
-      visible,
-    });
-    setInstance(newInstance);
-    newInstance.setMap(map);
-    return () => {
-      if (!map) return;
-      newInstance.setMap(null);
-    };
-  }, [map]);
+      visible = true,
+      ...eventProps
+    }: MarkerProps,
+    ref: React.Ref<naver.maps.Marker | undefined>
+  ) => {
+    const { current: map } = useMap();
+    const [instance, setInstance] = useState<naver.maps.Marker>();
 
-  useEffect(() => {
-    if (!instance) return;
-    instance.setPosition(position);
-  }, [instance, position]);
+    useEffect(() => {
+      if (!map) return undefined;
+      const newInstance = new naver.maps.Marker({
+        position,
+        zIndex,
+        animation,
+        clickable,
+        cursor,
+        draggable,
+        icon,
+        shape,
+        title,
+        visible,
+      });
+      setInstance(newInstance);
+      newInstance.setMap(map);
+      return () => {
+        if (!map) return;
+        newInstance.setMap(null);
+      };
+    }, [map]);
 
-  useEffect(() => {
-    if (!instance) return;
-    instance.setAnimation(animation ?? null);
-  }, [instance, animation]);
+    useEffect(() => {
+      if (!instance) return;
+      instance.setPosition(position);
+    }, [instance, position]);
 
-  useEffect(() => {
-    if (!instance) return;
-    instance.setClickable(clickable);
-  }, [instance, clickable]);
+    useEffect(() => {
+      if (!instance) return;
+      instance.setAnimation(animation ?? null);
+    }, [instance, animation]);
 
-  useEffect(() => {
-    if (zIndex === undefined || !instance) return;
-    instance.setZIndex(zIndex);
-  }, [zIndex, instance]);
+    useEffect(() => {
+      if (!instance) return;
+      instance.setClickable(clickable);
+    }, [instance, clickable]);
 
-  useEffect(() => {
-    if (!instance) return;
-    instance.setCursor(cursor ?? "");
-  }, [instance, cursor]);
+    useEffect(() => {
+      if (zIndex === undefined || !instance) return;
+      instance.setZIndex(zIndex);
+    }, [zIndex, instance]);
 
-  useEffect(() => {
-    if (!instance) return;
-    instance.setDraggable(draggable);
-  }, [instance, draggable]);
+    useEffect(() => {
+      if (!instance) return;
+      instance.setCursor(cursor ?? "");
+    }, [instance, cursor]);
 
-  useEffect(() => {
-    if (!instance || !icon) return;
-    instance.setIcon(icon);
-  }, [instance, icon]);
+    useEffect(() => {
+      if (!instance) return;
+      instance.setDraggable(draggable);
+    }, [instance, draggable]);
 
-  useEffect(() => {
-    if (!instance || !shape) return;
-    instance.setShape(shape);
-  }, [instance, shape]);
+    useEffect(() => {
+      if (!instance || !icon) return;
+      instance.setIcon(icon);
+    }, [instance, icon]);
 
-  useEffect(() => {
-    if (!instance || !title) return;
-    instance.setTitle(title);
-  }, [instance, title]);
+    useEffect(() => {
+      if (!instance || !shape) return;
+      instance.setShape(shape);
+    }, [instance, shape]);
 
-  useEffect(() => {
-    if (!instance) return;
-    instance.setVisible(visible);
-  }, [instance, visible]);
+    useEffect(() => {
+      if (!instance || !title) return;
+      instance.setTitle(title);
+    }, [instance, title]);
 
-  const handlersRef = useRef<
-    Partial<Record<EventKey, (...args: unknown[]) => void>>
-  >({});
+    useEffect(() => {
+      if (!instance) return;
+      instance.setVisible(visible);
+    }, [instance, visible]);
 
-  useEffect(() => {
-    const next: Partial<Record<EventKey, (...args: unknown[]) => void>> = {};
-    (Object.keys(EVENT_TO_PROP) as EventKey[]).forEach((eventKey) => {
-      const propKey = EVENT_TO_PROP[eventKey];
-      const fn = (eventProps as MarkerEventProps)[propKey];
-      if (typeof fn === "function")
-        next[eventKey] = fn as (...args: unknown[]) => void;
-    });
-    handlersRef.current = next;
-  }, [eventProps]);
+    const handlersRef = useRef<
+      Partial<Record<EventKey, (...args: unknown[]) => void>>
+    >({});
 
-  useEffect(() => {
-    if (!instance) return;
+    useEffect(() => {
+      const next: Partial<Record<EventKey, (...args: unknown[]) => void>> = {};
+      (Object.keys(EVENT_TO_PROP) as EventKey[]).forEach((eventKey) => {
+        const propKey = EVENT_TO_PROP[eventKey];
+        const fn = (eventProps as MarkerEventProps)[propKey];
+        if (typeof fn === "function")
+          next[eventKey] = fn as (...args: unknown[]) => void;
+      });
+      handlersRef.current = next;
+    }, [eventProps]);
 
-    const disposers: Array<() => void> = [];
-    (Object.keys(EVENT_TO_PROP) as EventKey[]).forEach((eventKey) => {
-      const listener = naver.maps.Event.addListener(
-        instance,
-        eventKey,
-        (...args: unknown[]) => {
-          handlersRef.current[eventKey]?.(...args);
-        }
-      );
-      disposers.push(() => naver.maps.Event.removeListener(listener));
-    });
-    return () => disposers.forEach((d) => d());
-  }, [instance]);
+    useEffect(() => {
+      if (!instance) return;
 
-  return null;
-};
+      const disposers: Array<() => void> = [];
+      (Object.keys(EVENT_TO_PROP) as EventKey[]).forEach((eventKey) => {
+        const listener = naver.maps.Event.addListener(
+          instance,
+          eventKey,
+          (...args: unknown[]) => {
+            handlersRef.current[eventKey]?.(...args);
+          }
+        );
+        disposers.push(() => naver.maps.Event.removeListener(listener));
+      });
+      return () => disposers.forEach((d) => d());
+    }, [instance]);
+
+    useImperativeHandle(ref, () => instance, [instance]);
+
+    return null;
+  }
+);
 
 export default Marker;
