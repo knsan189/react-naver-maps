@@ -2,7 +2,6 @@
 let loadPromise: Promise<typeof window.naver.maps> | null = null;
 
 export type NaverMapsSubmodule =
-  | "gl"
   | "traffic"
   | "transit"
   | "drawing"
@@ -14,6 +13,7 @@ export interface LoadNaverMapsOptions {
   ncpKeyId: string;
   submodules?: NaverMapsSubmodule[];
   scriptId?: string;
+  useGL?: boolean;
 }
 
 export function loadNaverMaps(opts: LoadNaverMapsOptions) {
@@ -32,7 +32,11 @@ export function loadNaverMaps(opts: LoadNaverMapsOptions) {
       scriptId
     ) as HTMLScriptElement | null;
 
-    const subs = (opts.submodules ?? []).filter(Boolean);
+    const subsSet = new Set<NaverMapsSubmodule | "gl">(
+      (opts.submodules ?? []).filter(Boolean)
+    );
+    if (opts.useGL !== false) subsSet.add("gl");
+    const subs = Array.from(subsSet);
     const hasGL = subs.includes("gl");
     const callbackName = hasGL
       ? `__naverMapsOnLoad__${scriptId.replace(/[^a-zA-Z0-9_]/g, "_")}`

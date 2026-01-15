@@ -9,8 +9,8 @@ import createCustomOverlayClass, {
 interface Props {
   children: ReactNode;
   position: naver.maps.Coord | naver.maps.CoordLiteral;
-  zIndex: number;
-  anchor: OverlayAnchorType;
+  zIndex?: number;
+  anchor?: OverlayAnchorType;
 }
 
 const Overlay = ({ children, ...options }: Props) => {

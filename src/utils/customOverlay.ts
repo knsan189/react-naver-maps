@@ -12,7 +12,7 @@ export type OverlayAnchorType =
 export interface OverlayOptions {
   element: HTMLElement;
   position: naver.maps.Coord | naver.maps.CoordLiteral;
-  zIndex: number;
+  zIndex?: number;
   anchor?: OverlayAnchorType;
 }
 
@@ -31,8 +31,8 @@ const anchorStyleTransformMap: Record<OverlayAnchorType, string> = {
 export type CustomOverlayCtor = new (opts: OverlayOptions) => {
   getPosition(): naver.maps.Coord | naver.maps.CoordLiteral;
   setPosition(position: naver.maps.Coord | naver.maps.CoordLiteral): void;
-  setZIndex(zIndex: number): void;
-  setAnchor(anchor: OverlayAnchorType): void;
+  setZIndex(zIndex?: number): void;
+  setAnchor(anchor?: OverlayAnchorType): void;
   onAdd(): void;
   draw(): void;
   destroy(): void;
@@ -45,9 +45,9 @@ const createCustomOverlayClass = (): CustomOverlayCtor => {
 
     _position: naver.maps.Coord | naver.maps.CoordLiteral;
 
-    zIndex: number;
+    zIndex?: number;
 
-    anchor: OverlayAnchorType;
+    anchor?: OverlayAnchorType;
 
     constructor({
       element,
@@ -71,12 +71,12 @@ const createCustomOverlayClass = (): CustomOverlayCtor => {
       this.draw();
     }
 
-    setZIndex(zIndex: number) {
+    setZIndex(zIndex?: number) {
       this.zIndex = zIndex;
       this.draw();
     }
 
-    setAnchor(anchor: OverlayAnchorType) {
+    setAnchor(anchor?: OverlayAnchorType) {
       this.anchor = anchor;
       this.draw();
     }
@@ -95,10 +95,11 @@ const createCustomOverlayClass = (): CustomOverlayCtor => {
         new naver.maps.LatLng(this.getPosition())
       );
       this._element.style.position = "absolute";
-      this._element.style.zIndex = this.zIndex.toString();
+      this._element.style.zIndex = this.zIndex?.toString() ?? "auto";
       this._element.style.left = `${pixelPosition.x}px`;
       this._element.style.top = `${pixelPosition.y}px`;
-      this._element.style.transform = anchorStyleTransformMap[this.anchor];
+      this._element.style.transform =
+        anchorStyleTransformMap[this.anchor ?? "bottom-center"];
     }
 
     destroy(): void {

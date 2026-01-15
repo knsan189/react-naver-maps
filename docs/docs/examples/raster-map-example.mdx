@@ -5,13 +5,13 @@ sidebar_position: 7
 import { GLPolylineExample } from "@site/src/components/MapExample";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-# GL 서브모듈 예제
+# Raster 지도 예제 (`disableGL`)
 
-GL 서브모듈을 사용하여 WebGL 기반의 고성능 렌더링 예제입니다.
+이 라이브러리는 기본적으로 GL(WebGL)을 자동 로드합니다. 호환성·리소스 이유로 WebGL을 끄고 싶다면 `disableGL`을 `true`로 설정해 non-GL(레거시) 렌더러를 강제할 수 있습니다. GL 로드가 실패하면 자동으로 non-GL로 한 번 더 시도합니다.
 
-## GL 서브모듈 기본 사용
+## 기본 비GL 사용 (`disableGL`)
 
-GL 서브모듈을 사용하면 WebGL 기반의 고성능 렌더링을 활용할 수 있습니다. `Map` 컴포넌트의 `submodules` prop에 `"gl"`을 추가하면 됩니다:
+`disableGL`만 켜면 별도 서브모듈 설정 없이 GL을 끌 수 있습니다:
 
 ```tsx
 import { Map, Polyline } from "@rousen/react-naver-maps";
@@ -25,7 +25,7 @@ function App() {
   ];
 
   return (
-    <Map ncpKeyId="your-ncp-key-id" submodules={["gl"]}>
+    <Map ncpKeyId="your-ncp-key-id" disableGL>
       <Polyline
         path={path}
         strokeColor="#ff0000"
@@ -37,9 +37,9 @@ function App() {
 }
 ```
 
-## 대량 Polyline 렌더링
+## 대량 Polyline를 non-GL로 렌더링
 
-GL 서브모듈을 사용하면 많은 수의 Polyline을 더 효율적으로 렌더링할 수 있습니다:
+대량 오버레이에서도 WebGL을 끄고 싶을 때 `disableGL`로 강제할 수 있습니다:
 
 <BrowserOnly>{() => <GLPolylineExample />}</BrowserOnly>
 
@@ -73,11 +73,10 @@ function GLPolylineExample() {
   return (
     <Map
       ncpKeyId="your-ncp-key-id"
-      submodules={["gl"]}
+      disableGL
       mapOptions={{
         center: { x: 127.0276, y: 37.4979 },
         zoom: 13,
-        gl: true,
       }}
     >
       {paths.map((path, index) => (
@@ -96,14 +95,8 @@ function GLPolylineExample() {
 export default GLPolylineExample;
 ```
 
-## GL 서브모듈의 장점
+## 언제 `disableGL`을 사용할까?
 
-- **고성능 렌더링**: WebGL을 활용하여 많은 수의 Polyline을 효율적으로 렌더링
-- **부드러운 애니메이션**: 대량의 데이터를 다룰 때도 부드러운 성능 유지
-- **메모리 효율성**: GPU 가속을 통한 메모리 사용 최적화
-
-GL 서브모듈은 특히 다음과 같은 경우에 유용합니다:
-
-- 수백 개 이상의 Polyline을 동시에 표시해야 할 때
-- 실시간으로 업데이트되는 경로 데이터를 표시할 때
-- 복잡한 경로 네트워크를 시각화할 때
+- 특정 브라우저/기기에서 WebGL 호환성 문제가 있을 때
+- 서버 사이드 렌더링 중 GL 초기화를 피하고 싶을 때
+- 단순 지도 + 소량 오버레이만 필요해 레거시 렌더러로 충분할 때

@@ -8,6 +8,8 @@ sidebar_position: 1
 
 > 이 문서는 [네이버 지도 API v3 공식 문서](https://navermaps.github.io/maps.js.ncp/docs/naver.maps.Map.html)를 기반으로 작성되었습니다.
 
+> 기본 동작: GL(WebGL) 서브모듈을 자동으로 로드하여 고성능 렌더링을 사용합니다. 필요하면 `disableGL`로 비GL 렌더러를 강제할 수 있습니다.
+
 ## 기본 사용법
 
 ```tsx
@@ -30,13 +32,14 @@ function App() {
 
 ### 선택 Props
 
-| Prop         | Type                    | Default    | Description                                    |
-| ------------ | ----------------------- | ---------- | ---------------------------------------------- |
-| `id`         | `string`                | -          | 지도 컨테이너의 ID                             |
-| `mapTypeId`  | `naver.maps.MapTypeId`  | `"normal"` | 지도 타입 (normal, satellite, hybrid, terrain) |
-| `mapOptions` | `naver.maps.MapOptions` | -          | 네이버 지도 옵션                               |
-| `submodules` | `NaverMapsSubmodule[]`  | `[]`       | 로드할 서브모듈 (gl, traffic, transit 등)      |
-| `style`      | `React.CSSProperties`   | -          | 지도 컨테이너 스타일                           |
+| Prop         | Type                                | Default    | Description                                                   |
+| ------------ | ----------------------------------- | ---------- | ------------------------------------------------------------- |
+| `id`         | `string`                            | -          | 지도 컨테이너의 ID                                            |
+| `mapTypeId`  | `naver.maps.MapTypeId`              | `"normal"` | 지도 타입 (normal, satellite, hybrid, terrain)                |
+| `mapOptions` | `Omit<naver.maps.MapOptions, "gl">` | -          | 네이버 지도 옵션 (`gl`은 내부에서 관리)                       |
+| `submodules` | `NaverMapsSubmodule[]`              | `[]`       | 로드할 서브모듈 (`gl`은 기본 포함, 여기에 넣지 않아도 됩니다) |
+| `style`      | `React.CSSProperties`               | -          | 지도 컨테이너 스타일                                          |
+| `disableGL`  | `boolean`                           | `false`    | GL 렌더링/GL 서브모듈 비활성화 (필요 시에만 사용)             |
 
 ### 이벤트 핸들러
 
@@ -170,46 +173,31 @@ interface Size {
 ```tsx
 import { Map } from "@rousen/react-naver-maps";
 
-<Map ncpKeyId="your-ncp-key-id" submodules={["gl", "traffic"]} />;
+// GL은 자동 포함됩니다. 다른 서브모듈만 추가하세요.
+<Map ncpKeyId="your-ncp-key-id" submodules={["traffic", "transit"]} />;
 ```
 
-### GL 서브모듈 사용
+### GL 사용과 옵트아웃
 
-GL 서브모듈은 WebGL 기반의 고성능 렌더링을 제공합니다. 많은 수의 오버레이(Polyline, Polygon 등)를 효율적으로 렌더링할 때 유용합니다.
-
-#### GL 설정 방법
-
-`submodules` prop에 `"gl"`을 추가하고, `mapOptions`에 `gl: true`를 설정합니다:
+- 기본값: GL 서브모듈 + WebGL 렌더링이 자동 활성화됩니다.
+- 실패 시: GL 로드가 실패하면 자동으로 non-GL로 한 번 더 시도합니다.
+- 옵트아웃: WebGL을 쓰지 않으려면 `disableGL`을 `true`로 주면 됩니다.
 
 ```tsx
-import { Map } from "@rousen/react-naver-maps";
+// GL 기본 활성 (별도 설정 불필요)
+<Map ncpKeyId="your-ncp-key-id" />
 
-<Map
-  ncpKeyId="your-ncp-key-id"
-  submodules={["gl"]}
-  mapOptions={{
-    center: { x: 127.0276, y: 37.4979 },
-    zoom: 13,
-    gl: true,
-  }}
-/>;
+// GL 비활성화 (레거시 렌더링 사용)
+<Map ncpKeyId="your-ncp-key-id" disableGL />;
 ```
 
 #### GL 서브모듈의 장점
 
-- **고성능 렌더링**: WebGL을 활용하여 많은 수의 오버레이를 효율적으로 렌더링
-- **부드러운 애니메이션**: 대량의 데이터를 다룰 때도 부드러운 성능 유지
-- **메모리 효율성**: GPU 가속을 통한 메모리 사용 최적화
+- **고성능 렌더링**: WebGL로 대량 오버레이를 효율적으로 처리
+- **부드러운 애니메이션**: 많은 데이터에서도 매끄러운 인터랙션
+- **메모리 효율성**: GPU 가속을 통한 리소스 절약
 
-#### 사용 사례
-
-GL 서브모듈은 다음과 같은 경우에 특히 유용합니다:
-
-- 수백 개 이상의 Polyline을 동시에 표시해야 할 때
-- 실시간으로 업데이트되는 경로 데이터를 표시할 때
-- 복잡한 경로 네트워크를 시각화할 때
-
-#### 예제: GL과 함께 Polyline 사용
+#### 예제: GL로 대량 Polyline 렌더링
 
 ```tsx
 import { Map, Polyline } from "@rousen/react-naver-maps";
@@ -221,8 +209,7 @@ function GLPolylineExample() {
   );
 
   useEffect(() => {
-    // 많은 수의 경로 생성
-    const generatedPaths: Array<Array<{ x: number; y: number }>> = [];
+    const generated: Array<Array<{ x: number; y: number }>> = [];
     for (let i = 0; i < 100; i++) {
       const path: Array<{ x: number; y: number }> = [];
       for (let j = 0; j < 10; j++) {
@@ -231,19 +218,17 @@ function GLPolylineExample() {
           y: 37.4979 + (Math.random() - 0.5) * 0.1,
         });
       }
-      generatedPaths.push(path);
+      generated.push(path);
     }
-    setPaths(generatedPaths);
+    setPaths(generated);
   }, []);
 
   return (
     <Map
       ncpKeyId="your-ncp-key-id"
-      submodules={["gl"]}
       mapOptions={{
         center: { x: 127.0276, y: 37.4979 },
         zoom: 13,
-        gl: true,
       }}
     >
       {paths.map((path, index) => (
@@ -260,7 +245,7 @@ function GLPolylineExample() {
 }
 ```
 
-> **참고**: GL 서브모듈 사용 예제는 [GL 예제](/docs/examples/gl-example)에서 더 자세히 확인할 수 있습니다.
+> **참고**: non-GL 렌더링 예제는 [Raster 예제](/docs/examples/raster-map-example)에서 확인할 수 있습니다.
 
 ### ref 사용
 

@@ -102,10 +102,11 @@ export interface MapProps extends MapEventProps {
   ncpKeyId: string;
   id?: string;
   mapTypeId?: naver.maps.MapTypeId;
-  mapOptions?: naver.maps.MapOptions;
+  mapOptions?: Omit<naver.maps.MapOptions, "gl">;
   children?: ReactNode;
   submodules?: NaverMapsSubmodule[];
   style?: React.CSSProperties;
+  disableGL?: boolean;
 }
 
 const Map = forwardRef<naver.maps.Map, MapProps>(
@@ -118,6 +119,7 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       mapOptions,
       submodules = [],
       style,
+      disableGL = false,
       ...eventProps
     }: MapProps,
     ref: React.Ref<naver.maps.Map | undefined>
@@ -127,7 +129,11 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
     const [mapInstance, setMapInstance] = useState<naver.maps.Map>();
     const contextValueRef = useRef<naver.maps.Map | undefined>(undefined);
 
-    const { isScriptLoaded } = useScriptLoader({ ncpKeyId, submodules });
+    const { isScriptLoaded } = useScriptLoader({
+      ncpKeyId,
+      submodules,
+      disableGL,
+    });
 
     const keyedMapOptions = useMemo(() => {
       return JSON.stringify(mapOptions) || "";
@@ -135,7 +141,10 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
 
     useEffect(() => {
       if (!isScriptLoaded || !containerRef.current) return;
-      const newInstance = new naver.maps.Map(containerRef.current, mapOptions);
+      const newInstance = new naver.maps.Map(containerRef.current, {
+        ...mapOptions,
+        gl: !disableGL,
+      });
       setMapInstance(newInstance);
       mountedMapContext.onMount(newInstance, id);
       contextValueRef.current = newInstance;
@@ -184,11 +193,6 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       });
       return () => disposers.forEach((d) => d());
     }, [mapInstance]);
-
-    useEffect(() => {
-      if (!mapInstance) return;
-      mapInstance.setMapTypeId(mapTypeId);
-    }, [mapInstance, mapTypeId]);
 
     useEffect(() => {
       if (!mapInstance) return;

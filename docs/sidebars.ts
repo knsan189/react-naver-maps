@@ -37,7 +37,7 @@ const sidebars: SidebarsConfig = {
         "examples/polygon-polyline-example",
         "examples/interactive-map",
         "examples/complete-example",
-        "examples/gl-example",
+        "examples/raster-map-example",
       ],
     },
   ],

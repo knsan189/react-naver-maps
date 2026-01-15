@@ -26,6 +26,8 @@ function App() {
 }
 ```
 
+> 기본적으로 GL 서브모듈을 포함해 로드하며, WebGL 렌더링을 사용합니다. 필요 시 `disableGL` prop으로 옵트아웃할 수 있습니다.
+
 더 자세한 사용법과 API 문서는 [문서 사이트](https://your-docusaurus-site.com)를 참고하세요.
 
 ## 개발
@@ -78,7 +80,7 @@ npm run docs:dev
 - 🔄 네이버 맵스 SDK 자동 로드
 - 🎨 React 컴포넌트를 지도 오버레이로 사용 가능
 - 📦 트리 쉐이킹 지원
-- 🔌 GL, Traffic, Transit 등 서브모듈 지원
+- 🔌 GL 기본 활성(실패 시 자동 non-GL 폴백), Traffic, Transit 등 서브모듈 지원
 - ⚡ 풍부한 이벤트 핸들러 지원
 
 ## 호환성
