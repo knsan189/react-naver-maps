@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Overlay 컴포넌트
+# Overlay
 
 `Overlay` 컴포넌트는 React 컴포넌트를 지도 위의 커스텀 오버레이로 표시할 수 있게 해주는 컴포넌트입니다.
 

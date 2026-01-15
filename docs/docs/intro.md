@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# 시작하기
+# Intro
 
 `@rousen/react-naver-maps`는 네이버 지도 API를 React에서 쉽게 사용할 수 있도록 만든 라이브러리입니다.
 

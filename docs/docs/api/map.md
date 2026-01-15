@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Map 컴포넌트
+# Map
 
 `Map` 컴포넌트는 네이버 지도를 표시하는 기본 컴포넌트입니다.
 

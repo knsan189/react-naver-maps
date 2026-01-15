@@ -1,5 +1,12 @@
 import React from "react";
-import { Map, Marker, Polygon, Polyline } from "@rousen/react-naver-maps";
+import {
+  Map,
+  Marker,
+  Polygon,
+  Polyline,
+  Circle,
+  Rectangle,
+} from "@rousen/react-naver-maps";
 import { defaultNcpKeyId, type MapExampleProps } from "./types";
 
 export function ClickToAddMarkerExample({
@@ -219,6 +226,201 @@ export function ShapeDrawingExample({
               strokeWeight={2}
             />
           )}
+        </Map>
+      </div>
+    </div>
+  );
+}
+
+export function DynamicPolylineExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  const [path, setPath] = React.useState([
+    { x: 126.978, y: 37.5665 },
+    { x: 126.9895, y: 37.5651 },
+  ]);
+
+  const addPoint = () => {
+    const newPoint = {
+      x: 126.978 + (Math.random() - 0.5) * 0.02,
+      y: 37.5665 + (Math.random() - 0.5) * 0.02,
+    };
+    setPath((prev) => [...prev, newPoint]);
+  };
+
+  const resetPath = () => {
+    setPath([
+      { x: 126.978, y: 37.5665 },
+      { x: 126.9895, y: 37.5651 },
+    ]);
+  };
+
+  return (
+    <div style={{ margin: "20px 0" }}>
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={addPoint}>점 추가</button>
+        <button onClick={resetPath} style={{ marginLeft: "6px" }}>
+          초기화
+        </button>
+        <span style={{ marginLeft: "10px", fontSize: "14px" }}>
+          점 개수: {path.length}
+        </span>
+      </div>
+      <div style={{ width: "100%", height: "400px" }}>
+        <Map
+          ncpKeyId={ncpKeyId}
+          mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 15 }}
+        >
+          <Polyline
+            path={path}
+            strokeColor="#007bff"
+            strokeOpacity={0.8}
+            strokeWeight={4}
+          />
+        </Map>
+      </div>
+    </div>
+  );
+}
+
+export function DynamicPolygonExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  const [paths, setPaths] = React.useState([
+    [
+      { x: 126.978, y: 37.5665 },
+      { x: 126.9895, y: 37.5651 },
+      { x: 126.992, y: 37.57 },
+    ],
+  ]);
+
+  const addPoint = () => {
+    const currentPath = paths[0];
+    const newPoint = {
+      x: 126.978 + (Math.random() - 0.5) * 0.02,
+      y: 37.5665 + (Math.random() - 0.5) * 0.02,
+    };
+    setPaths([[...currentPath, newPoint]]);
+  };
+
+  const resetPolygon = () => {
+    setPaths([
+      [
+        { x: 126.978, y: 37.5665 },
+        { x: 126.9895, y: 37.5651 },
+        { x: 126.992, y: 37.57 },
+      ],
+    ]);
+  };
+
+  return (
+    <div style={{ margin: "20px 0" }}>
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={addPoint}>점 추가</button>
+        <button onClick={resetPolygon} style={{ marginLeft: "6px" }}>
+          초기화
+        </button>
+        <span style={{ marginLeft: "10px", fontSize: "14px" }}>
+          점 개수: {paths[0].length}
+        </span>
+      </div>
+      <div style={{ width: "100%", height: "400px" }}>
+        <Map
+          ncpKeyId={ncpKeyId}
+          mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 15 }}
+        >
+          {paths[0].length >= 3 && (
+            <Polygon
+              paths={paths}
+              fillColor="#60a5fa"
+              fillOpacity={0.3}
+              strokeColor="#2563eb"
+              strokeOpacity={0.9}
+              strokeWeight={2}
+            />
+          )}
+        </Map>
+      </div>
+    </div>
+  );
+}
+
+export function DynamicCircleExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  const [radius, setRadius] = React.useState(500);
+
+  const increase = () => setRadius((prev) => Math.min(prev + 100, 2000));
+  const decrease = () => setRadius((prev) => Math.max(prev - 100, 100));
+
+  return (
+    <div style={{ margin: "20px 0" }}>
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={decrease}>반경 줄이기</button>
+        <button onClick={increase} style={{ marginLeft: "6px" }}>
+          반경 늘리기
+        </button>
+        <span style={{ marginLeft: "10px", fontSize: "14px" }}>
+          반경: {radius}m
+        </span>
+      </div>
+      <div style={{ width: "100%", height: "400px" }}>
+        <Map
+          ncpKeyId={ncpKeyId}
+          mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 14 }}
+        >
+          <Circle
+            center={{ lat: 37.5665, lng: 126.978 }}
+            radius={radius}
+            fillColor="#60a5fa"
+            fillOpacity={0.3}
+            strokeColor="#2563eb"
+            strokeOpacity={0.9}
+            strokeWeight={2}
+          />
+        </Map>
+      </div>
+    </div>
+  );
+}
+
+export function DynamicRectangleExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  const [delta, setDelta] = React.useState(0.006);
+
+  const increase = () => setDelta((prev) => Math.min(prev + 0.002, 0.02));
+  const decrease = () => setDelta((prev) => Math.max(prev - 0.002, 0.002));
+
+  const center = { x: 126.978, y: 37.5665 };
+  const bounds = {
+    minX: center.x - delta,
+    minY: center.y - delta,
+    maxX: center.x + delta,
+    maxY: center.y + delta,
+  };
+
+  return (
+    <div style={{ margin: "20px 0" }}>
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={decrease}>크기 줄이기</button>
+        <button onClick={increase} style={{ marginLeft: "6px" }}>
+          크기 늘리기
+        </button>
+        <span style={{ marginLeft: "10px", fontSize: "14px" }}>
+          크기: {(delta * 2).toFixed(3)}
+        </span>
+      </div>
+      <div style={{ width: "100%", height: "400px" }}>
+        <Map ncpKeyId={ncpKeyId} mapOptions={{ center, zoom: 14 }}>
+          <Rectangle
+            bounds={bounds}
+            fillColor="#34d399"
+            fillOpacity={0.3}
+            strokeColor="#059669"
+            strokeOpacity={0.9}
+            strokeWeight={2}
+          />
         </Map>
       </div>
     </div>

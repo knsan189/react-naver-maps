@@ -5,6 +5,8 @@ import {
   Overlay,
   Polygon,
   Polyline,
+  Circle,
+  Rectangle,
 } from "@rousen/react-naver-maps";
 import { defaultNcpKeyId, type MapExampleProps } from "./types";
 
@@ -151,6 +153,54 @@ export function PolylineExample({
           strokeColor="#0000ff"
           strokeOpacity={0.8}
           strokeWeight={5}
+        />
+      </Map>
+    </div>
+  );
+}
+
+export function CircleExample({ ncpKeyId = defaultNcpKeyId }: MapExampleProps) {
+  return (
+    <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
+      <Map
+        ncpKeyId={ncpKeyId}
+        mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 14 }}
+      >
+        <Circle
+          center={{ lat: 37.5665, lng: 126.978 }}
+          radius={500}
+          fillColor="#60a5fa"
+          fillOpacity={0.3}
+          strokeColor="#2563eb"
+          strokeOpacity={0.9}
+          strokeWeight={2}
+        />
+      </Map>
+    </div>
+  );
+}
+
+export function RectangleExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  return (
+    <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
+      <Map
+        ncpKeyId={ncpKeyId}
+        mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 14 }}
+      >
+        <Rectangle
+          bounds={{
+            minX: 126.972,
+            minY: 37.562,
+            maxX: 126.984,
+            maxY: 37.571,
+          }}
+          fillColor="#34d399"
+          fillOpacity={0.3}
+          strokeColor="#059669"
+          strokeOpacity={0.9}
+          strokeWeight={2}
         />
       </Map>
     </div>

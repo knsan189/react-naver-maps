@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# 설치
+# Installation
 
 `@rousen/react-naver-maps`를 프로젝트에 설치하는 방법을 안내합니다.
 

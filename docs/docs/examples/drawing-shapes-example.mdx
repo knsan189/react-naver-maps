@@ -1,0 +1,436 @@
+---
+sidebar_position: 4
+---
+
+import BrowserOnly from "@docusaurus/BrowserOnly";
+import {
+  CircleExample,
+  DynamicPolygonExample,
+  DynamicPolylineExample,
+  DynamicCircleExample,
+  DynamicRectangleExample,
+  PolygonExample,
+  PolylineExample,
+  RectangleExample,
+} from "@site/src/components/MapExample";
+
+# 도형 그리기
+
+지도에 폴리라인과 폴리곤을 그리는 예제입니다.
+
+## 폴리라인
+
+### 지도 위에 폴리라인 그리기
+
+<BrowserOnly>{() => <PolylineExample />}</BrowserOnly>
+
+#### 코드
+
+```tsx
+import { Map, Polyline } from "@rousen/react-naver-maps";
+
+function BasicPolyline() {
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map
+        ncpKeyId="your-ncp-key-id"
+        mapOptions={{
+          center: { x: 126.978, y: 37.5665 },
+          zoom: 15,
+        }}
+      >
+        <Polyline
+          path={[
+            { x: 126.978, y: 37.5665 },
+            { x: 126.9895, y: 37.5651 },
+            { x: 126.992, y: 37.57 },
+          ]}
+          strokeColor="#ff0000"
+          strokeWeight={3}
+          strokeOpacity={0.8}
+        />
+      </Map>
+    </div>
+  );
+}
+
+export default BasicPolyline;
+```
+
+### 동적으로 폴리라인 그리기
+
+<BrowserOnly>{() => <DynamicPolylineExample />}</BrowserOnly>
+
+#### 코드
+
+```tsx
+import { useState } from "react";
+import { Map, Polyline } from "@rousen/react-naver-maps";
+
+function DynamicPolyline() {
+  const [path, setPath] = useState([
+    { x: 126.978, y: 37.5665 },
+    { x: 126.9895, y: 37.5651 },
+  ]);
+
+  const addPoint = () => {
+    const newPoint = {
+      x: 126.978 + (Math.random() - 0.5) * 0.02,
+      y: 37.5665 + (Math.random() - 0.5) * 0.02,
+    };
+    setPath([...path, newPoint]);
+  };
+
+  const resetPath = () => {
+    setPath([
+      { x: 126.978, y: 37.5665 },
+      { x: 126.9895, y: 37.5651 },
+    ]);
+  };
+
+  return (
+    <div style={{ margin: "20px 0" }}>
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={addPoint}>점 추가</button>
+        <button onClick={resetPath} style={{ marginLeft: "6px" }}>
+          초기화
+        </button>
+        <span style={{ marginLeft: "10px", fontSize: "14px" }}>
+          점 개수: {path.length}
+        </span>
+      </div>
+      <div style={{ width: "100%", height: "400px" }}>
+        <Map
+          ncpKeyId="your-ncp-key-id"
+          mapOptions={{
+            center: { x: 126.978, y: 37.5665 },
+            zoom: 15,
+          }}
+        >
+          <Polyline
+            path={path}
+            strokeColor="#007bff"
+            strokeWeight={4}
+            strokeOpacity={0.8}
+          />
+        </Map>
+      </div>
+    </div>
+  );
+}
+
+export default DynamicPolyline;
+```
+
+## 폴리곤
+
+### 지도 위에 폴리곤 그리기
+
+<BrowserOnly>{() => <PolygonExample />}</BrowserOnly>
+
+#### 코드
+
+```tsx
+import { Map, Polygon } from "@rousen/react-naver-maps";
+
+function BasicPolygon() {
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map
+        ncpKeyId="your-ncp-key-id"
+        mapOptions={{
+          center: { x: 126.978, y: 37.5665 },
+          zoom: 15,
+        }}
+      >
+        <Polygon
+          paths={[
+            [
+              { x: 126.978, y: 37.5665 },
+              { x: 126.9895, y: 37.5651 },
+              { x: 126.992, y: 37.57 },
+              { x: 126.978, y: 37.5665 },
+            ],
+          ]}
+          fillColor="#60a5fa"
+          fillOpacity={0.3}
+          strokeColor="#2563eb"
+          strokeOpacity={0.9}
+          strokeWeight={2}
+        />
+      </Map>
+    </div>
+  );
+}
+
+export default BasicPolygon;
+```
+
+### 동적으로 폴리곤 그리기
+
+<BrowserOnly>{() => <DynamicPolygonExample />}</BrowserOnly>
+
+#### 코드
+
+```tsx
+import { useState } from "react";
+import { Map, Polygon } from "@rousen/react-naver-maps";
+
+function DynamicPolygon() {
+  const [paths, setPaths] = useState([
+    [
+      { x: 126.978, y: 37.5665 },
+      { x: 126.9895, y: 37.5651 },
+      { x: 126.992, y: 37.57 },
+    ],
+  ]);
+
+  const addPoint = () => {
+    const currentPath = paths[0];
+    const newPoint = {
+      x: 126.978 + (Math.random() - 0.5) * 0.02,
+      y: 37.5665 + (Math.random() - 0.5) * 0.02,
+    };
+    setPaths([[...currentPath, newPoint]]);
+  };
+
+  const resetPolygon = () => {
+    setPaths([
+      [
+        { x: 126.978, y: 37.5665 },
+        { x: 126.9895, y: 37.5651 },
+        { x: 126.992, y: 37.57 },
+      ],
+    ]);
+  };
+
+  return (
+    <div style={{ margin: "20px 0" }}>
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={addPoint}>점 추가</button>
+        <button onClick={resetPolygon} style={{ marginLeft: "6px" }}>
+          초기화
+        </button>
+        <span style={{ marginLeft: "10px", fontSize: "14px" }}>
+          점 개수: {paths[0].length}
+        </span>
+      </div>
+      <div style={{ width: "100%", height: "400px" }}>
+        <Map
+          ncpKeyId="your-ncp-key-id"
+          mapOptions={{
+            center: { x: 126.978, y: 37.5665 },
+            zoom: 15,
+          }}
+        >
+          {paths[0].length >= 3 && (
+            <Polygon
+              paths={paths}
+              fillColor="#60a5fa"
+              fillOpacity={0.3}
+              strokeColor="#2563eb"
+              strokeOpacity={0.9}
+              strokeWeight={2}
+            />
+          )}
+        </Map>
+      </div>
+    </div>
+  );
+}
+
+export default DynamicPolygon;
+```
+
+## Circle
+
+### 지도 위에 Circle 그리기
+
+<BrowserOnly>{() => <CircleExample />}</BrowserOnly>
+
+#### 코드
+
+```tsx
+import { Map, Circle } from "@rousen/react-naver-maps";
+
+function BasicCircle() {
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map
+        ncpKeyId="your-ncp-key-id"
+        mapOptions={{
+          center: { x: 126.978, y: 37.5665 },
+          zoom: 14,
+        }}
+      >
+        <Circle
+          center={{ x: 126.978, y: 37.5665 }}
+          radius={500}
+          fillColor="#60a5fa"
+          fillOpacity={0.3}
+          strokeColor="#2563eb"
+          strokeOpacity={0.9}
+          strokeWeight={2}
+        />
+      </Map>
+    </div>
+  );
+}
+
+export default BasicCircle;
+```
+
+### 동적으로 Circle 그리기
+
+<BrowserOnly>{() => <DynamicCircleExample />}</BrowserOnly>
+
+#### 코드
+
+```tsx
+import { useState } from "react";
+import { Map, Circle } from "@rousen/react-naver-maps";
+
+function DynamicCircle() {
+  const [radius, setRadius] = useState(500);
+
+  const increase = () => setRadius((prev) => Math.min(prev + 100, 2000));
+  const decrease = () => setRadius((prev) => Math.max(prev - 100, 100));
+
+  return (
+    <div style={{ margin: "20px 0" }}>
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={decrease}>반경 줄이기</button>
+        <button onClick={increase} style={{ marginLeft: "6px" }}>
+          반경 늘리기
+        </button>
+        <span style={{ marginLeft: "10px", fontSize: "14px" }}>
+          반경: {radius}m
+        </span>
+      </div>
+      <div style={{ width: "100%", height: "400px" }}>
+        <Map
+          ncpKeyId="your-ncp-key-id"
+          mapOptions={{
+            center: { x: 126.978, y: 37.5665 },
+            zoom: 14,
+          }}
+        >
+          <Circle
+            center={{ x: 126.978, y: 37.5665 }}
+            radius={radius}
+            fillColor="#60a5fa"
+            fillOpacity={0.3}
+            strokeColor="#2563eb"
+            strokeOpacity={0.9}
+            strokeWeight={2}
+          />
+        </Map>
+      </div>
+    </div>
+  );
+}
+
+export default DynamicCircle;
+```
+
+## Rectangle
+
+### 지도 위에 Rectangle 그리기
+
+<BrowserOnly>{() => <RectangleExample />}</BrowserOnly>
+
+#### 코드
+
+```tsx
+import { Map, Rectangle } from "@rousen/react-naver-maps";
+
+function BasicRectangle() {
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <Map
+        ncpKeyId="your-ncp-key-id"
+        mapOptions={{
+          center: { x: 126.978, y: 37.5665 },
+          zoom: 14,
+        }}
+      >
+        <Rectangle
+          bounds={{
+            minX: 126.972,
+            minY: 37.562,
+            maxX: 126.984,
+            maxY: 37.571,
+          }}
+          fillColor="#34d399"
+          fillOpacity={0.3}
+          strokeColor="#059669"
+          strokeOpacity={0.9}
+          strokeWeight={2}
+        />
+      </Map>
+    </div>
+  );
+}
+
+export default BasicRectangle;
+```
+
+### 동적으로 Rectangle 그리기
+
+<BrowserOnly>{() => <DynamicRectangleExample />}</BrowserOnly>
+
+#### 코드
+
+```tsx
+import { useState } from "react";
+import { Map, Rectangle } from "@rousen/react-naver-maps";
+
+function DynamicRectangle() {
+  const [delta, setDelta] = useState(0.006);
+  const center = { x: 126.978, y: 37.5665 };
+
+  const increase = () => setDelta((prev) => Math.min(prev + 0.002, 0.02));
+  const decrease = () => setDelta((prev) => Math.max(prev - 0.002, 0.002));
+
+  const bounds = {
+    minX: center.x - delta,
+    minY: center.y - delta,
+    maxX: center.x + delta,
+    maxY: center.y + delta,
+  };
+
+  return (
+    <div style={{ margin: "20px 0" }}>
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={decrease}>크기 줄이기</button>
+        <button onClick={increase} style={{ marginLeft: "6px" }}>
+          크기 늘리기
+        </button>
+        <span style={{ marginLeft: "10px", fontSize: "14px" }}>
+          크기: {(delta * 2).toFixed(3)}
+        </span>
+      </div>
+      <div style={{ width: "100%", height: "400px" }}>
+        <Map
+          ncpKeyId="your-ncp-key-id"
+          mapOptions={{
+            center,
+            zoom: 14,
+          }}
+        >
+          <Rectangle
+            bounds={bounds}
+            fillColor="#34d399"
+            fillOpacity={0.3}
+            strokeColor="#059669"
+            strokeOpacity={0.9}
+            strokeWeight={2}
+          />
+        </Map>
+      </div>
+    </div>
+  );
+}
+
+export default DynamicRectangle;
+```

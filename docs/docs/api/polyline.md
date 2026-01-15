@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# Polyline 컴포넌트
+# Polyline
 
 `Polyline` 컴포넌트는 지도 위에 선을 그리는 컴포넌트입니다.
 

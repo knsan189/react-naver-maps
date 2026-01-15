@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Marker 컴포넌트
+# Marker
 
 `Marker` 컴포넌트는 지도 위에 마커를 표시하는 컴포넌트입니다.
 

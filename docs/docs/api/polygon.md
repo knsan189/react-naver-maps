@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# Polygon 컴포넌트
+# Polygon
 
 `Polygon` 컴포넌트는 지도 위에 다각형 영역을 표시하는 컴포넌트입니다.
 
