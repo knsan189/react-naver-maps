@@ -18,7 +18,11 @@ export function ClickToAddMarkerExample({
 
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
-      <Map ncpKeyId={ncpKeyId} onClick={handleMapClick}>
+      <Map
+        ncpKeyId={ncpKeyId}
+        mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 13 }}
+        onClick={handleMapClick}
+      >
         {markers.map((marker) => (
           <Marker key={marker.id} position={{ x: marker.x, y: marker.y }} />
         ))}
@@ -37,7 +41,10 @@ export function DraggableMarkerExample({
 
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
-      <Map ncpKeyId={ncpKeyId}>
+      <Map
+        ncpKeyId={ncpKeyId}
+        mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 14 }}
+      >
         <Marker
           position={position}
           draggable
@@ -67,6 +74,7 @@ export function MapEventsExample({
       <div style={{ width: "100%", height: "400px" }}>
         <Map
           ncpKeyId={ncpKeyId}
+          mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 12 }}
           onClick={() => addEvent("지도 클릭")}
           onZoomStart={() => addEvent("줌 시작")}
           onZoomEnd={() => addEvent("줌 종료")}
@@ -135,7 +143,11 @@ export function MapControlsExample({
         </button>
       </div>
       <div style={{ width: "100%", height: "400px" }}>
-        <Map ref={mapRef} ncpKeyId={ncpKeyId} />
+        <Map
+          ref={mapRef}
+          ncpKeyId={ncpKeyId}
+          mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 12 }}
+        />
       </div>
     </div>
   );

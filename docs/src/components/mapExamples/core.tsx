@@ -13,7 +13,10 @@ export function BasicMapExample({
 }: MapExampleProps) {
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
-      <Map ncpKeyId={ncpKeyId} />
+      <Map
+        ncpKeyId={ncpKeyId}
+        mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 12 }}
+      />
     </div>
   );
 }
@@ -21,7 +24,10 @@ export function BasicMapExample({
 export function MarkerExample({ ncpKeyId = defaultNcpKeyId }: MapExampleProps) {
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
-      <Map ncpKeyId={ncpKeyId}>
+      <Map
+        ncpKeyId={ncpKeyId}
+        mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 14 }}
+      >
         <Marker position={{ x: 127.0276, y: 37.4979 }} />
       </Map>
     </div>
@@ -39,7 +45,10 @@ export function MultipleMarkersExample({
 
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
-      <Map ncpKeyId={ncpKeyId}>
+      <Map
+        ncpKeyId={ncpKeyId}
+        mapOptions={{ center: { x: 126.976, y: 37.5303 }, zoom: 11 }}
+      >
         {locations.map((location, index) => (
           <Marker
             key={index}
@@ -57,7 +66,10 @@ export function OverlayExample({
 }: MapExampleProps) {
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
-      <Map ncpKeyId={ncpKeyId}>
+      <Map
+        ncpKeyId={ncpKeyId}
+        mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 14 }}
+      >
         <Overlay
           position={{ x: 127.0276, y: 37.4979 }}
           zIndex={100}
@@ -95,7 +107,10 @@ export function PolygonExample({
 
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
-      <Map ncpKeyId={ncpKeyId}>
+      <Map
+        ncpKeyId={ncpKeyId}
+        mapOptions={{ center: { x: 127.0281, y: 37.4984 }, zoom: 15 }}
+      >
         <Polygon
           paths={paths}
           fillColor="#ff0000"
@@ -120,7 +135,10 @@ export function PolylineExample({
 
   return (
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
-      <Map ncpKeyId={ncpKeyId}>
+      <Map
+        ncpKeyId={ncpKeyId}
+        mapOptions={{ center: { x: 127.0286, y: 37.4989 }, zoom: 14 }}
+      >
         <Polyline
           path={path}
           strokeColor="#0000ff"
@@ -141,7 +159,7 @@ export function CompleteExample({
         ncpKeyId={ncpKeyId}
         mapOptions={{
           center: { x: 127.0276, y: 37.4979 },
-          zoom: 14,
+          zoom: 13,
         }}
       >
         <Marker position={{ x: 127.0276, y: 37.4979 }} />

@@ -32,7 +32,7 @@ export function GLPolylineExample({
         disableGL
         mapOptions={{
           center: { x: 127.0276, y: 37.4979 },
-          zoom: 13,
+          zoom: 12,
         }}
       >
         {paths.map((path, index) => (
