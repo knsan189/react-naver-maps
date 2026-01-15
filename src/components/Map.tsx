@@ -116,7 +116,7 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       mapTypeId = "normal" as naver.maps.MapTypeId,
       ncpKeyId,
       children,
-      mapOptions,
+      mapOptions = {},
       submodules = [],
       style,
       disableGL = false,

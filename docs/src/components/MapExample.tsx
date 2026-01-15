@@ -207,8 +207,7 @@ export function GLPolylineExample({
     <div style={{ width: "100%", height: "500px", margin: "20px 0" }}>
       <Map
         ncpKeyId={ncpKeyId}
-        // @ts-expect-error: disableGL is available in the current package build
-        disableGL
+        // disableGL
         mapOptions={{
           center: { x: 127.0276, y: 37.4979 },
           zoom: 13,
