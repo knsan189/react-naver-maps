@@ -1,32 +1,14 @@
----
-sidebar_position: 5
----
-
-import {
-  ClickToAddMarkerExample,
-  DraggableMarkerExample,
-  MapControlsExample,
-  MapEventsExample,
-} from "@site/src/components/MapExample";
-import BrowserOnly from "@docusaurus/BrowserOnly";
-
-# 인터랙티브 지도 예제
-
-사용자 상호작용이 있는 고급 예제입니다.
-
-## 지도 클릭으로 마커 추가
-
-<BrowserOnly>{() => <ClickToAddMarkerExample />}</BrowserOnly>
-
-```tsx
-import { useState } from "react";
+import React from "react";
 import { Map, Marker } from "@rousen/react-naver-maps";
+import { defaultNcpKeyId, type MapExampleProps } from "./types";
 
-function ClickToAddMarker() {
-  const [markers, setMarkers] = useState<
+export function ClickToAddMarkerExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  const [markers, setMarkers] = React.useState<
     Array<{ x: number; y: number; id: number }>
   >([]);
-  const [idCounter, setIdCounter] = useState(0);
+  const [idCounter, setIdCounter] = React.useState(0);
 
   const handleMapClick = (event: naver.maps.PointerEvent) => {
     const coord = event.coord;
@@ -35,8 +17,8 @@ function ClickToAddMarker() {
   };
 
   return (
-    <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="your-ncp-key-id" onClick={handleMapClick}>
+    <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
+      <Map ncpKeyId={ncpKeyId} onClick={handleMapClick}>
         {markers.map((marker) => (
           <Marker key={marker.id} position={{ x: marker.x, y: marker.y }} />
         ))}
@@ -45,62 +27,46 @@ function ClickToAddMarker() {
   );
 }
 
-export default ClickToAddMarker;
-```
-
-## 마커 드래그
-
-<BrowserOnly>{() => <DraggableMarkerExample />}</BrowserOnly>
-
-```tsx
-import { useState } from "react";
-import { Map, Marker } from "@rousen/react-naver-maps";
-
-function DraggableMarker() {
-  const [position, setPosition] = useState({ x: 127.0276, y: 37.4979 });
+export function DraggableMarkerExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  const [position, setPosition] = React.useState({
+    x: 127.0276,
+    y: 37.4979,
+  });
 
   return (
-    <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="your-ncp-key-id">
+    <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
+      <Map ncpKeyId={ncpKeyId}>
         <Marker
           position={position}
-          draggable={true}
-          onPositionChanged={(marker) => {
-            const pos = marker.getPosition();
+          draggable
+          onPositionChanged={(pos) => {
             setPosition({ x: pos.x, y: pos.y });
           }}
         />
       </Map>
-      <div style={{ marginTop: "10px" }}>
+      <div style={{ marginTop: "10px", fontSize: "14px" }}>
         현재 위치: {position.x.toFixed(4)}, {position.y.toFixed(4)}
       </div>
     </div>
   );
 }
 
-export default DraggableMarker;
-```
-
-## 지도 이벤트 처리
-
-<BrowserOnly>{() => <MapEventsExample />}</BrowserOnly>
-
-```tsx
-import { useState } from "react";
-import { Map } from "@rousen/react-naver-maps";
-
-function MapEvents() {
-  const [events, setEvents] = useState<string[]>([]);
+export function MapEventsExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  const [events, setEvents] = React.useState<string[]>([]);
 
   const addEvent = (eventName: string) => {
     setEvents((prev) => [eventName, ...prev].slice(0, 10));
   };
 
   return (
-    <div>
+    <div style={{ margin: "20px 0" }}>
       <div style={{ width: "100%", height: "400px" }}>
         <Map
-          ncpKeyId="your-ncp-key-id"
+          ncpKeyId={ncpKeyId}
           onClick={() => addEvent("지도 클릭")}
           onZoomStart={() => addEvent("줌 시작")}
           onZoomEnd={() => addEvent("줌 종료")}
@@ -110,10 +76,12 @@ function MapEvents() {
         />
       </div>
       <div style={{ marginTop: "10px" }}>
-        <h3>이벤트 로그:</h3>
-        <ul>
+        <h3 style={{ marginBottom: "6px" }}>이벤트 로그</h3>
+        <ul style={{ paddingLeft: "18px", margin: 0 }}>
           {events.map((event, index) => (
-            <li key={index}>{event}</li>
+            <li key={index} style={{ fontSize: "14px", lineHeight: "1.4" }}>
+              {event}
+            </li>
           ))}
         </ul>
       </div>
@@ -121,19 +89,10 @@ function MapEvents() {
   );
 }
 
-export default MapEvents;
-```
-
-## 지도 제어 버튼
-
-<BrowserOnly>{() => <MapControlsExample />}</BrowserOnly>
-
-```tsx
-import { useRef } from "react";
-import { Map } from "@rousen/react-naver-maps";
-
-function MapControls() {
-  const mapRef = useRef<naver.maps.Map>(null);
+export function MapControlsExample({
+  ncpKeyId = defaultNcpKeyId,
+}: MapExampleProps) {
+  const mapRef = React.useRef<naver.maps.Map>(null);
 
   const zoomIn = () => {
     if (mapRef.current) {
@@ -156,31 +115,28 @@ function MapControls() {
   };
 
   return (
-    <div>
+    <div style={{ margin: "20px 0" }}>
       <div style={{ marginBottom: "10px" }}>
         <button onClick={zoomIn}>확대</button>
-        <button onClick={zoomOut} style={{ marginLeft: "5px" }}>
+        <button onClick={zoomOut} style={{ marginLeft: "6px" }}>
           축소
         </button>
         <button
           onClick={() => setCenter(127.0276, 37.4979)}
-          style={{ marginLeft: "5px" }}
+          style={{ marginLeft: "6px" }}
         >
           강남역으로 이동
         </button>
         <button
           onClick={() => setCenter(126.978, 37.5665)}
-          style={{ marginLeft: "5px" }}
+          style={{ marginLeft: "6px" }}
         >
           서울역으로 이동
         </button>
       </div>
       <div style={{ width: "100%", height: "400px" }}>
-        <Map ref={mapRef} ncpKeyId="your-ncp-key-id" />
+        <Map ref={mapRef} ncpKeyId={ncpKeyId} />
       </div>
     </div>
   );
 }
-
-export default MapControls;
-```
