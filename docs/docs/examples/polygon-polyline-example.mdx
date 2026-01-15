@@ -6,6 +6,7 @@ import {
   PolygonExample,
   PolylineExample,
 } from "@site/src/components/MapExample";
+import BrowserOnly from "@docusaurus/BrowserOnly";
 
 # Polygon & Polyline 예제
 
@@ -13,7 +14,7 @@ import {
 
 ## Polygon - 영역 표시
 
-<PolygonExample />
+<BrowserOnly>{() => <PolygonExample />}</BrowserOnly>
 
 ### 코드
 
@@ -49,7 +50,7 @@ export default PolygonExample;
 
 ## Polyline - 경로 표시
 
-<PolylineExample />
+<BrowserOnly>{() => <PolylineExample />}</BrowserOnly>
 
 ### 코드
 

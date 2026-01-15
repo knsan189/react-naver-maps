@@ -1,12 +1,20 @@
----
-sidebar_position: 5
----
+## sidebar_position: 5
+
+import BrowserOnly from "@docusaurus/BrowserOnly";
+import {
+  ClickToAddMarkerExample,
+  DraggableMarkerExample,
+  MapControlsExample,
+  MapEventsExample,
+} from "@site/src/components/MapExample";
 
 # 인터랙티브 지도 예제
 
 사용자 상호작용이 있는 고급 예제입니다.
 
 ## 지도 클릭으로 마커 추가
+
+<BrowserOnly>{() => <ClickToAddMarkerExample />}</BrowserOnly>
 
 ```tsx
 import { useState } from "react";
@@ -40,6 +48,8 @@ export default ClickToAddMarker;
 
 ## 마커 드래그
 
+<BrowserOnly>{() => <DraggableMarkerExample />}</BrowserOnly>
+
 ```tsx
 import { useState } from "react";
 import { Map, Marker } from "@rousen/react-naver-maps";
@@ -70,6 +80,8 @@ export default DraggableMarker;
 ```
 
 ## 지도 이벤트 처리
+
+<BrowserOnly>{() => <MapEventsExample />}</BrowserOnly>
 
 ```tsx
 import { useState } from "react";
@@ -111,6 +123,8 @@ export default MapEvents;
 ```
 
 ## 지도 제어 버튼
+
+<BrowserOnly>{() => <MapControlsExample />}</BrowserOnly>
 
 ```tsx
 import { useRef } from "react";

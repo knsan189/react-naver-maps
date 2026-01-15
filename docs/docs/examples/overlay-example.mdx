@@ -3,6 +3,7 @@ sidebar_position: 3
 ---
 
 import { OverlayExample } from "@site/src/components/MapExample";
+import BrowserOnly from "@docusaurus/BrowserOnly";
 
 # 오버레이 예제
 
@@ -10,7 +11,7 @@ React 컴포넌트를 지도 위에 오버레이로 표시하는 예제입니다
 
 ## 기본 정보창
 
-<OverlayExample />
+<BrowserOnly>{() => <OverlayExample />}</BrowserOnly>
 
 ### 코드
 

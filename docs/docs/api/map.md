@@ -7,7 +7,6 @@ sidebar_position: 1
 `Map` 컴포넌트는 네이버 지도를 표시하는 기본 컴포넌트입니다.
 
 > 이 문서는 [네이버 지도 API v3 공식 문서](https://navermaps.github.io/maps.js.ncp/docs/naver.maps.Map.html)를 기반으로 작성되었습니다.
-
 > 기본 동작: GL(WebGL) 서브모듈을 자동으로 로드하여 고성능 렌더링을 사용합니다. 필요하면 `disableGL`로 비GL 렌더러를 강제할 수 있습니다.
 
 ## 기본 사용법
