@@ -2,165 +2,94 @@
 sidebar_position: 4
 ---
 
-import {
-  PolygonExample,
-  PolylineExample,
-} from "@site/src/components/MapExample";
+import { ShapeDrawingExample } from "@site/src/components/MapExample";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
-# Polygon & Polyline 예제
+# 도형 그리기 예제
 
-지도에 영역과 경로를 표시하는 예제입니다.
+지도 클릭으로 점을 추가해 폴리라인과 폴리곤을 직접 그리는 예제입니다.
 
-## Polygon - 영역 표시
+## 라이브 예제
 
-<BrowserOnly>{() => <PolygonExample />}</BrowserOnly>
+<BrowserOnly>{() => <ShapeDrawingExample />}</BrowserOnly>
 
-### 코드
+## 코드
 
 ```tsx
-import { Map, Polygon } from "@rousen/react-naver-maps";
+import { useState } from "react";
+import { Map, Marker, Polygon, Polyline } from "@rousen/react-naver-maps";
 
-function PolygonExample() {
-  const paths = [
-    { x: 127.0276, y: 37.4979 },
-    { x: 127.0286, y: 37.4979 },
-    { x: 127.0286, y: 37.4989 },
-    { x: 127.0276, y: 37.4989 },
-  ];
+function ShapeDrawing() {
+  const [points, setPoints] = useState<Array<{ x: number; y: number }>>([]);
+
+  const handleMapClick = (event: naver.maps.PointerEvent) => {
+    const { x, y } = event.coord;
+    setPoints((prev) => [...prev, { x, y }]);
+  };
+
+  const handleUndo = () => {
+    setPoints((prev) => prev.slice(0, -1));
+  };
+
+  const handleClear = () => {
+    setPoints([]);
+  };
 
   return (
-    <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="your-ncp-key-id">
-        <Polygon
-          paths={paths}
-          fillColor="#ff0000"
-          fillOpacity={0.3}
-          strokeColor="#ff0000"
-          strokeOpacity={0.8}
-          strokeWeight={3}
-        />
-      </Map>
+    <div style={{ margin: "20px 0" }}>
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={handleUndo} disabled={points.length === 0}>
+          마지막 점 삭제
+        </button>
+        <button
+          onClick={handleClear}
+          disabled={points.length === 0}
+          style={{ marginLeft: "6px" }}
+        >
+          초기화
+        </button>
+        <span style={{ marginLeft: "10px", fontSize: "14px" }}>
+          점 {points.length}개
+        </span>
+      </div>
+      <div style={{ width: "100%", height: "400px" }}>
+        <Map
+          ncpKeyId="your-ncp-key-id"
+          mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 13 }}
+          onClick={handleMapClick}
+        >
+          {points.map((point, index) => (
+            <Marker key={index} position={point} />
+          ))}
+          {points.length >= 2 && (
+            <Polyline
+              path={points}
+              strokeColor="#2563eb"
+              strokeOpacity={0.9}
+              strokeWeight={3}
+            />
+          )}
+          {points.length >= 3 && (
+            <Polygon
+              paths={[points]}
+              fillColor="#60a5fa"
+              fillOpacity={0.3}
+              strokeColor="#2563eb"
+              strokeOpacity={0.9}
+              strokeWeight={2}
+            />
+          )}
+        </Map>
+      </div>
     </div>
   );
 }
 
-export default PolygonExample;
+export default ShapeDrawing;
 ```
 
-## Polyline - 경로 표시
+## 설명
 
-<BrowserOnly>{() => <PolylineExample />}</BrowserOnly>
-
-### 코드
-
-```tsx
-import { Map, Polyline } from "@rousen/react-naver-maps";
-
-function PolylineExample() {
-  const path = [
-    { x: 127.0276, y: 37.4979 },
-    { x: 127.0286, y: 37.4989 },
-    { x: 127.0296, y: 37.4999 },
-  ];
-
-  return (
-    <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="your-ncp-key-id">
-        <Polyline
-          path={path}
-          strokeColor="#0000ff"
-          strokeOpacity={0.8}
-          strokeWeight={5}
-        />
-      </Map>
-    </div>
-  );
-}
-
-export default PolylineExample;
-```
-
-## 경로 추적 시뮬레이션
-
-```tsx
-import { useState, useEffect } from "react";
-import { Map, Polyline, Marker } from "@rousen/react-naver-maps";
-
-function RouteTracking() {
-  const [path, setPath] = useState<Array<{ x: number; y: number }>>([]);
-  const [currentPosition, setCurrentPosition] = useState({
-    x: 127.0276,
-    y: 37.4979,
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentPosition((prev) => ({
-        x: prev.x + (Math.random() - 0.5) * 0.001,
-        y: prev.y + (Math.random() - 0.5) * 0.001,
-      }));
-      setPath((prev) => [...prev, { ...currentPosition }]);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [currentPosition]);
-
-  return (
-    <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="your-ncp-key-id">
-        <Polyline path={path} strokeColor="#00ff00" strokeWeight={3} />
-        <Marker position={currentPosition} />
-      </Map>
-    </div>
-  );
-}
-
-export default RouteTracking;
-```
-
-## 여러 영역 표시
-
-```tsx
-import { Map, Polygon } from "@rousen/react-naver-maps";
-
-function MultiplePolygons() {
-  const areas = [
-    {
-      paths: [
-        { x: 127.0276, y: 37.4979 },
-        { x: 127.0286, y: 37.4979 },
-        { x: 127.0286, y: 37.4989 },
-      ],
-      fillColor: "#ff0000",
-    },
-    {
-      paths: [
-        { x: 127.0296, y: 37.4999 },
-        { x: 127.0306, y: 37.4999 },
-        { x: 127.0306, y: 37.5009 },
-      ],
-      fillColor: "#0000ff",
-    },
-  ];
-
-  return (
-    <div style={{ width: "100%", height: "400px" }}>
-      <Map ncpKeyId="your-ncp-key-id">
-        {areas.map((area, index) => (
-          <Polygon
-            key={index}
-            paths={area.paths}
-            fillColor={area.fillColor}
-            fillOpacity={0.3}
-            strokeColor={area.fillColor}
-            strokeWeight={2}
-          />
-        ))}
-      </Map>
-    </div>
-  );
-}
-
-export default MultiplePolygons;
-```
+- 지도 클릭으로 점을 추가하면 폴리라인이 그려집니다
+- 점이 3개 이상이면 폴리곤이 자동으로 채워집니다
+- 버튼으로 마지막 점 삭제/전체 초기화를 할 수 있습니다
