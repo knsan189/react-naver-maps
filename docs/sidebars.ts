@@ -28,6 +28,7 @@ const sidebars: SidebarsConfig = {
         "api/circle",
         "api/rectangle",
         "api/ellipse",
+        "api/datalayer",
       ],
     },
     {
