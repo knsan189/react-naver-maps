@@ -2,9 +2,9 @@ import React from "react";
 import { Map, Polyline } from "@rousen/react-naver-maps";
 import { defaultNcpKeyId, type MapExampleProps } from "./types";
 
-export function GLPolylineExample({
+export const RasterMapMultiplePolylineExample: React.FC<MapExampleProps> = ({
   ncpKeyId = defaultNcpKeyId,
-}: MapExampleProps) {
+}: MapExampleProps) => {
   const [paths, setPaths] = React.useState<
     Array<Array<{ x: number; y: number }>>
   >([]);
@@ -47,4 +47,4 @@ export function GLPolylineExample({
       </Map>
     </div>
   );
-}
+};

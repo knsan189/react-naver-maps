@@ -22,3 +22,6 @@ export type { CircleProps } from "./components/Circle";
 
 export { default as Ellipse } from "./components/Ellipse";
 export type { EllipseProps } from "./components/Ellipse";
+
+export { default as DataLayer } from "./components/DataLayer";
+export type { DataLayerProps } from "./components/DataLayer";

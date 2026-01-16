@@ -39,6 +39,7 @@ const sidebars: SidebarsConfig = {
         "examples/overlay-example",
         "examples/drawing-shapes-example",
         "examples/interactive-map",
+        "examples/data-layer-example",
         "examples/raster-map-example",
       ],
     },

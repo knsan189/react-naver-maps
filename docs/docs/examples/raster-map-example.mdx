@@ -2,37 +2,30 @@
 sidebar_position: 7
 ---
 
-import { GLPolylineExample } from "@site/src/components/MapExample";
+import { RasterMapMultiplePolylineExample } from "@site/src/components/examples/rasterMapMultiplePolylineExample";
+import { RasterMapExample } from "@site/src/components/examples/rasterMapExample";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
 # 래스터 지도 예제
 
 이 라이브러리는 기본적으로 GL(WebGL)을 자동 로드합니다. 호환성·리소스 이유로 WebGL을 끄고 싶다면 `disableGL`을 `true`로 설정해 non-GL(레거시) 렌더러를 강제할 수 있습니다. GL 로드가 실패하면 자동으로 non-GL로 한 번 더 시도합니다.
 
-## 기본 비GL 사용 (`disableGL`)
+## 래스터 지도 사용 (`disableGL`)
 
 `disableGL`만 켜면 별도 서브모듈 설정 없이 GL을 끌 수 있습니다:
+
+<BrowserOnly>{() => <RasterMapExample />}</BrowserOnly>
 
 ```tsx
 import { Map, Polyline } from "@rousen/react-naver-maps";
 
 function App() {
-  const path = [
-    { x: 127.0276, y: 37.4979 },
-    { x: 127.0286, y: 37.4989 },
-    { x: 127.0296, y: 37.4999 },
-    { x: 127.0306, y: 37.5009 },
-  ];
-
   return (
-    <Map ncpKeyId="your-ncp-key-id" disableGL>
-      <Polyline
-        path={path}
-        strokeColor="#ff0000"
-        strokeWeight={5}
-        strokeOpacity={0.8}
-      />
-    </Map>
+    <Map
+      ncpKeyId="your-ncp-key-id"
+      disableGL
+      mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 12 }}
+    />
   );
 }
 ```
@@ -41,7 +34,7 @@ function App() {
 
 대량 오버레이에서도 WebGL을 끄고 싶을 때 `disableGL`로 강제할 수 있습니다:
 
-<BrowserOnly>{() => <GLPolylineExample />}</BrowserOnly>
+<BrowserOnly>{() => <RasterMapMultiplePolylineExample />}</BrowserOnly>
 
 ### 코드
 
@@ -49,7 +42,7 @@ function App() {
 import { Map, Polyline } from "@rousen/react-naver-maps";
 import { useState, useEffect } from "react";
 
-function GLPolylineExample() {
+function RasterMapPolylineExample() {
   const [paths, setPaths] = useState<Array<Array<{ x: number; y: number }>>>(
     []
   );

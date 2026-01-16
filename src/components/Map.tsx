@@ -141,6 +141,10 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
 
     useEffect(() => {
       if (!isScriptLoaded || !containerRef.current) return;
+      if (id === "current") {
+        throw new Error("id cannot be 'current' use other id");
+      }
+
       const newInstance = new naver.maps.Map(containerRef.current, {
         ...mapOptions,
         gl: !disableGL,
