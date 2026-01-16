@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "시청 주변"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [126.9728, 37.5661],
+            [126.9812, 37.5661],
+            [126.9812, 37.5703],
+            [126.9728, 37.5703],
+            [126.9728, 37.5661]
+          ]
+        ]
+      }
+    }
+  ]
+}
