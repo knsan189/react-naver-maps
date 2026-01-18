@@ -64,13 +64,7 @@ npm run lint
 
 ## 문서
 
-상세한 사용법, API 문서, 예제는 [문서 사이트](https://your-docusaurus-site.com)에서 확인할 수 있습니다.
-
-로컬에서 문서를 실행하려면:
-
-```bash
-npm run docs:dev
-```
+상세한 사용법, API 문서, 예제는 [문서 사이트](https://knsan189.github.io/react-naver-maps)에서 확인할 수 있습니다.
 
 ## 주요 기능
 
@@ -100,14 +94,6 @@ npm run docs:dev
 - React >= 16.8.0 (Hooks 지원 필요)
 - React DOM >= 16.8.0
 - 네이버 클라우드 플랫폼(NCP) 클라이언트 ID
-
-## 기술 스택
-
-- **React** - UI 라이브러리
-- **TypeScript** - 타입 안정성
-- **Rollup** - 번들러
-- **Docusaurus** - 문서 사이트 생성
-- **ESLint** - 코드 품질 관리
 
 ## 라이선스
 
