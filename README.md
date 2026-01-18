@@ -15,7 +15,7 @@ pnpm add @rousen/react-naver-maps
 ## 빠른 시작
 
 ```tsx
-import { Map, MapProvider, Marker } from "@rousen/react-naver-maps";
+import { Map, Marker } from "@rousen/react-naver-maps";
 
 function App() {
   return (
@@ -28,7 +28,7 @@ function App() {
 
 > 기본적으로 GL 서브모듈을 포함해 로드하며, WebGL 렌더링을 사용합니다. 필요 시 `disableGL` prop으로 옵트아웃할 수 있습니다.
 
-더 자세한 사용법과 API 문서는 [문서 사이트](https://your-docusaurus-site.com)를 참고하세요.
+더 자세한 사용법과 API 문서는 [문서 사이트](https://knsan189.github.io/react-naver-maps)를 참고하세요.
 
 ## 개발
 
