@@ -29,6 +29,7 @@ const sidebars: SidebarsConfig = {
         "api/rectangle",
         "api/ellipse",
         "api/datalayer",
+        "api/mapprovider",
       ],
     },
     {
@@ -41,6 +42,7 @@ const sidebars: SidebarsConfig = {
         "examples/drawing-shapes-example",
         "examples/interactive-map",
         "examples/data-layer-example",
+        "examples/mapprovider-example",
         "examples/raster-map-example",
       ],
     },

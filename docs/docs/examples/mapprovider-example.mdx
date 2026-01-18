@@ -1,0 +1,69 @@
+---
+sidebar_position: 8
+---
+
+import { MapProviderExample } from "@site/src/components/examples/mapProviderExample";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+# MapProvider 예제
+
+여러 `Map` 인스턴스를 한 번에 관리하고, `useMap`으로 제어하는 예제입니다.
+
+## 라이브 예제
+
+<BrowserOnly>{() => <MapProviderExample />}</BrowserOnly>
+
+## 코드
+
+```tsx
+import { Map, MapProvider, useMap } from "@rousen/react-naver-maps";
+
+function MapProviderControls() {
+  const maps = useMap();
+
+  const moveLeft = () => {
+    maps.left?.setCenter({ x: 127.0276, y: 37.4979 });
+    maps.left?.setZoom(14);
+  };
+
+  const moveRight = () => {
+    maps.right?.setCenter({ x: 126.978, y: 37.5665 });
+    maps.right?.setZoom(12);
+  };
+
+  return (
+    <div>
+      <button onClick={moveLeft}>왼쪽 지도 이동</button>
+      <button onClick={moveRight} style={{ marginLeft: "6px" }}>
+        오른쪽 지도 이동
+      </button>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <MapProvider>
+      <MapProviderControls />
+      <div style={{ display: "flex", gap: "12px" }}>
+        <div style={{ width: "50%", height: "300px" }}>
+          <Map
+            id="left"
+            ncpKeyId="your-ncp-key-id"
+            mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 11 }}
+          />
+        </div>
+        <div style={{ width: "50%", height: "300px" }}>
+          <Map
+            id="right"
+            ncpKeyId="your-ncp-key-id"
+            mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 13 }}
+          />
+        </div>
+      </div>
+    </MapProvider>
+  );
+}
+
+export default App;
+```
