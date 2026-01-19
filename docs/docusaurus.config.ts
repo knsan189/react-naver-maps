@@ -70,6 +70,17 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
+  plugins: [
+    [
+      "@docusaurus/plugin-content-docs",
+      {
+        id: "examples",
+        path: "./examples",
+        routeBasePath: "examples",
+        sidebarPath: "./sidebarsExamples.ts",
+      },
+    ],
+  ],
 
   themeConfig: {
     // Replace with your project's social card
@@ -89,6 +100,13 @@ const config: Config = {
           sidebarId: "tutorialSidebar",
           position: "left",
           label: "문서",
+        },
+        {
+          type: "docSidebar",
+          sidebarId: "examplesSidebar",
+          docsPluginId: "examples",
+          position: "left",
+          label: "예제",
         },
         {
           href: "https://github.com/knsan189/react-naver-maps",

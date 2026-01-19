@@ -14,8 +14,17 @@ import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
  */
 const sidebars: SidebarsConfig = {
   tutorialSidebar: [
-    "intro",
-    "installation",
+    {
+      type: "category",
+      label: "Overview",
+      items: ["intro"],
+    },
+    {
+      type: "category",
+      label: "Developer Guide",
+      link: { type: "doc", id: "developer-guide/index" },
+      items: ["developer-guide/get-started", "developer-guide/ncp-key-id"],
+    },
     {
       type: "category",
       label: "API Reference",
@@ -30,20 +39,6 @@ const sidebars: SidebarsConfig = {
         "api/ellipse",
         "api/datalayer",
         "api/mapprovider",
-      ],
-    },
-    {
-      type: "category",
-      label: "Examples",
-      items: [
-        "examples/basic-map",
-        "examples/marker-example",
-        "examples/overlay-example",
-        "examples/drawing-shapes-example",
-        "examples/interactive-map",
-        "examples/data-layer-example",
-        "examples/mapprovider-example",
-        "examples/raster-map-example",
       ],
     },
   ],
