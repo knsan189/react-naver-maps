@@ -92,7 +92,7 @@ const config: Config = {
       title: "react-naver-maps",
       logo: {
         alt: "react-naver-maps Logo",
-        src: "img/logo.svg",
+        src: "img/logo.png",
       },
       items: [
         {
