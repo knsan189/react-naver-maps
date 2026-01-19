@@ -85,5 +85,5 @@ function App() {
 ## 다음 단계
 
 - [Developer Guide](/docs/developer-guide) - 환경 설정과 고급 사용법을 확인하세요
-- [예제 보기](/docs/examples/basic-map) - 다양한 사용 예제를 확인해보세요
+- [예제 보기](/examples/basic-map) - 다양한 사용 예제를 확인해보세요
 - [API 참조](/docs/api/map) - 각 컴포넌트의 상세 API 문서를 확인하세요

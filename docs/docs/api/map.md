@@ -244,7 +244,7 @@ function GLPolylineExample() {
 }
 ```
 
-> **참고**: non-GL 렌더링 예제는 [Raster 예제](/docs/examples/raster-map-example)에서 확인할 수 있습니다.
+> **참고**: non-GL 렌더링 예제는 [Raster 예제](/examples/raster-map-example)에서 확인할 수 있습니다.
 
 ### ref 사용
 
