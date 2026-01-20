@@ -80,6 +80,13 @@ const config: Config = {
         sidebarPath: "./sidebarsExamples.ts",
       },
     ],
+    [
+      "@docusaurus/plugin-google-gtag",
+      {
+        trackingID: "G-EGHGLMKH15",
+        anonymizeIP: true,
+      },
+    ],
   ],
 
   themeConfig: {
