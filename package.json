@@ -1,6 +1,6 @@
 {
   "name": "@rousen/react-naver-maps",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "React library for Naver Maps",
   "repository": {
     "type": "git",
@@ -11,10 +11,6 @@
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
-  },
   "exports": {
     ".": {
       "import": {

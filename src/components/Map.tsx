@@ -114,6 +114,7 @@ export interface MapProps extends MapEventProps {
   submodules?: NaverMapsSubmodule[];
   style?: React.CSSProperties;
   disableGL?: boolean;
+  reuseMap?: boolean;
 }
 
 const Map = forwardRef<naver.maps.Map, MapProps>(
@@ -127,6 +128,7 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       submodules = [],
       style,
       disableGL = false,
+      reuseMap = false,
       ...eventProps
     }: MapProps,
     ref: React.Ref<naver.maps.Map | undefined>
@@ -152,15 +154,38 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
         throw new Error("id cannot be 'current' use other id");
       }
 
+      const mapId = id ?? "default";
+      const existing = mountedMapContext.maps[mapId];
+
+      if (reuseMap && existing) {
+        const existingElement = existing.getElement();
+        if (existingElement && existingElement !== containerRef.current) {
+          containerRef.current.innerHTML = "";
+          containerRef.current.appendChild(existingElement);
+        }
+        existing.refresh();
+        setMapInstance(existing);
+        mountedMapContext.onMount(existing, mapId);
+        contextValueRef.current = existing;
+        return () => {
+          mountedMapContext.onUnmount(mapId, { keep: true });
+          contextValueRef.current = undefined;
+          const element = existing.getElement();
+          if (element?.parentElement) {
+            element.parentElement.removeChild(element);
+          }
+        };
+      }
+
       const newInstance = new naver.maps.Map(containerRef.current, {
         ...mapOptions,
         gl: !disableGL,
       });
       setMapInstance(newInstance);
-      mountedMapContext.onMount(newInstance, id);
+      mountedMapContext.onMount(newInstance, mapId);
       contextValueRef.current = newInstance;
       return () => {
-        mountedMapContext.onUnmount(id);
+        mountedMapContext.onUnmount(mapId);
         contextValueRef.current = undefined;
         queueMicrotask(() => {
           newInstance.destroy();

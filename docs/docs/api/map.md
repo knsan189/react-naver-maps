@@ -40,6 +40,7 @@ function App() {
 | `submodules` | `NaverMapsSubmodule[]`              | `[]`       | 로드할 서브모듈 (`gl`은 기본 포함, 여기에 넣지 않아도 됩니다)         |
 | `style`      | `React.CSSProperties`               | -          | 지도 컨테이너 스타일                                                  |
 | `disableGL`  | `boolean`                           | `false`    | GL 렌더링/GL 서브모듈 비활성화 (필요 시에만 사용, 비GL 렌더러로 강제) |
+| `reuseMap`   | `boolean`                           | `false`    | 동일 `id`의 지도 인스턴스를 재사용합니다 (`MapProvider` 필요)         |
 
 ### 이벤트 핸들러
 
@@ -88,6 +89,7 @@ function App() {
 - `mapOptions`는 내부에서 `setOptions`로 적용됩니다. 변경 시 전체 옵션이 갱신됩니다.
 - `mapTypeId`는 생성 이후 별도로 `setMapTypeId`로 반영됩니다.
 - `submodules`는 SDK 로딩 시 반영됩니다. 기본값으로 `gl`이 포함됩니다.
+- `reuseMap`은 동일 `id` 기준으로만 동작하며, 언마운트 시 인스턴스를 유지합니다.
 
 ## 예제
 

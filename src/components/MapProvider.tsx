@@ -4,7 +4,7 @@ import { createContext } from "react";
 export interface MountedMapContextType {
   maps: { [id: string]: naver.maps.Map };
   onMount: (map: naver.maps.Map, id?: string) => void;
-  onUnmount: (id?: string) => void;
+  onUnmount: (id?: string, options?: { keep?: boolean }) => void;
 }
 
 export const MountedMapContext = createContext<MountedMapContextType>({
@@ -24,13 +24,17 @@ const MapProvider = ({ children }: MapProviderProps) => {
     setMaps((prev) => ({ ...prev, [id]: map }));
   }, []);
 
-  const onUnmount = useCallback((id: string = "default") => {
-    setMaps((prev) => {
-      const newMaps = { ...prev };
-      delete newMaps[id];
-      return newMaps;
-    });
-  }, []);
+  const onUnmount = useCallback(
+    (id: string = "default", options?: { keep?: boolean }) => {
+      if (options?.keep) return;
+      setMaps((prev) => {
+        const newMaps = { ...prev };
+        delete newMaps[id];
+        return newMaps;
+      });
+    },
+    []
+  );
 
   const value = useMemo(
     () => ({ maps, onMount, onUnmount }),
