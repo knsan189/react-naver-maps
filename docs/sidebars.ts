@@ -23,7 +23,7 @@ const sidebars: SidebarsConfig = {
       type: "category",
       label: "Developer Guide",
       link: { type: "doc", id: "developer-guide/index" },
-      items: ["developer-guide/get-started", "developer-guide/ncp-key-id"],
+      items: ["developer-guide/get-started"],
     },
     {
       type: "category",

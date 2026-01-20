@@ -48,9 +48,58 @@ type DataLayerEventProps = {
 
 type DataLayerType = "gpx" | "kml" | "geojson";
 
+const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  if (value === null || typeof value !== "object") return false;
+  if (Array.isArray(value)) return false;
+  const proto = Object.getPrototypeOf(value);
+  return proto === Object.prototype || proto === null;
+};
+
+const isStyleEqual = (
+  left: unknown,
+  right: unknown,
+  seen = new WeakMap<object, WeakSet<object>>()
+): boolean => {
+  if (Object.is(left, right)) return true;
+  if (typeof left !== typeof right) return false;
+  if (typeof left === "function") return false;
+  if (left === null || right === null) return false;
+
+  if (Array.isArray(left)) {
+    if (!Array.isArray(right)) return false;
+    if (left.length !== right.length) return false;
+    for (let i = 0; i < left.length; i += 1) {
+      if (!isStyleEqual(left[i], right[i], seen)) return false;
+    }
+    return true;
+  }
+
+  if (isPlainObject(left)) {
+    if (!isPlainObject(right)) return false;
+    const leftSeen = seen.get(left);
+    if (leftSeen?.has(right)) return true;
+    if (leftSeen) {
+      leftSeen.add(right);
+    } else {
+      seen.set(left, new WeakSet([right]));
+    }
+
+    const leftKeys = Object.keys(left);
+    const rightKeys = Object.keys(right);
+    if (leftKeys.length !== rightKeys.length) return false;
+    for (const key of leftKeys) {
+      if (!Object.prototype.hasOwnProperty.call(right, key)) return false;
+      if (!isStyleEqual(left[key], right[key], seen)) return false;
+    }
+    return true;
+  }
+
+  return false;
+};
+
 export interface DataLayerProps extends DataLayerEventProps {
   type: DataLayerType;
-  url: string;
+  data: string | naver.maps.GeoJSON | naver.maps.GPX | naver.maps.KML;
   autoStyle?: boolean;
   style?: naver.maps.StyleOptions | naver.maps.StylingFunction;
   onLoad?: (layer: naver.maps.Data) => void;
@@ -59,7 +108,7 @@ export interface DataLayerProps extends DataLayerEventProps {
 
 const DataLayer = ({
   type,
-  url,
+  data,
   autoStyle = true,
   style,
   onLoad,
@@ -68,6 +117,10 @@ const DataLayer = ({
 }: DataLayerProps) => {
   const { current: map } = useMap();
   const [layer, setLayer] = useState<naver.maps.Data>();
+  const lastStyleRef = useRef<
+    naver.maps.StyleOptions | naver.maps.StylingFunction
+  >();
+  const lastLayerRef = useRef<naver.maps.Data>();
 
   const cleanUpFeatures = useMemo(() => {
     return (target: naver.maps.Data) => {
@@ -94,24 +147,27 @@ const DataLayer = ({
     const load = async () => {
       try {
         cleanUpFeatures(layer);
-        const response = await fetch(url, { signal: controller.signal });
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data layer: ${response.status}`);
-        }
-        if (type === "geojson") {
-          const geojson = (await response.json()) as naver.maps.GeoJSON;
-          if (!controller.signal.aborted) {
-            layer.addGeoJson(geojson, autoStyle);
-            onLoad?.(layer);
+        if (typeof data === "string") {
+          const response = await fetch(data, { signal: controller.signal });
+          if (!response.ok) {
+            throw new Error(`Failed to fetch data layer: ${response.status}`);
           }
-          return;
+
+          if (type === "geojson") {
+            const geojson = (await response.json()) as naver.maps.GeoJSON;
+            if (!controller.signal.aborted) {
+              layer.addGeoJson(geojson, autoStyle);
+              onLoad?.(layer);
+            }
+            return;
+          }
+
+          const text = await response.text();
+          const xml = new DOMParser().parseFromString(text, "text/xml");
+          if (type === "gpx") layer.addGpx(xml as naver.maps.GPX, autoStyle);
+          if (type === "kml") layer.addKml(xml as naver.maps.KML, autoStyle);
+          onLoad?.(layer);
         }
-        const text = await response.text();
-        if (controller.signal.aborted) return;
-        const xml = new DOMParser().parseFromString(text, "text/xml");
-        if (type === "gpx") layer.addGpx(xml as naver.maps.GPX, autoStyle);
-        if (type === "kml") layer.addKml(xml as naver.maps.KML, autoStyle);
-        onLoad?.(layer);
       } catch (error) {
         if (controller.signal.aborted) return;
         onError?.(error as Error);
@@ -119,11 +175,20 @@ const DataLayer = ({
     };
     load();
     return () => controller.abort();
-  }, [layer, type, url, autoStyle, cleanUpFeatures, onLoad, onError]);
+  }, [layer, type, data, autoStyle, cleanUpFeatures, onLoad, onError]);
 
   useEffect(() => {
     if (!layer || style === undefined) return;
+    if (
+      lastLayerRef.current === layer &&
+      lastStyleRef.current &&
+      isStyleEqual(lastStyleRef.current, style)
+    ) {
+      return;
+    }
     layer.setStyle(style);
+    lastStyleRef.current = style;
+    lastLayerRef.current = layer;
   }, [layer, style]);
 
   const handlersRef = useRef<

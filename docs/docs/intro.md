@@ -50,22 +50,6 @@ npm install -D @types/navermaps
 
 이 라이브러리는 TypeScript로 작성되어 있으며, 라이브러리 자체의 타입 정의가 포함되어 있습니다. `naver.maps.*` 전역 타입을 직접 쓰는 경우에만 `@types/navermaps`가 필요합니다.
 
-## 빠른 시작
-
-가장 기본적인 사용법은 다음과 같습니다:
-
-```tsx
-import { Map, Marker } from "@rousen/react-naver-maps";
-
-function App() {
-  return (
-    <Map ncpKeyId="your-ncp-key-id">
-      <Marker position={{ x: 127.0276, y: 37.4979 }} />
-    </Map>
-  );
-}
-```
-
 ## 주요 기능
 
 - 🗺️ 네이버 지도 API를 React 컴포넌트로 쉽게 사용
@@ -79,6 +63,6 @@ function App() {
 
 ## 다음 단계
 
-- [Developer Guide](/docs/developer-guide) - 환경 설정과 고급 사용법을 확인하세요
+- [빠른 시작](/docs/developer-guide/get-started) - 환경 설정과 고급 사용법을 확인하세요
 - [예제 보기](/examples/basic-map) - 다양한 사용 예제를 확인해보세요
 - [API 참조](/docs/api/map) - 각 컴포넌트의 상세 API 문서를 확인하세요

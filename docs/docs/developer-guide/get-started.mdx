@@ -2,6 +2,8 @@
 sidebar_position: 2
 ---
 
+import { BasicMapExample } from "@site/src/components/examples/basicMapExample";
+
 # Get Started
 
 `@rousen/react-naver-maps`를 설치하고 가장 빠르게 지도를 렌더링하는 방법을 정리합니다.
@@ -18,53 +20,20 @@ TypeScript에서 `naver.maps.*` 전역 타입을 쓰려면 `@types/navermaps`를
 npm install -D @types/navermaps
 ```
 
-## 2. 요구사항
-
-- **React** >= 16.8.0 (Hooks 지원 필요)
-- **React DOM** >= 16.8.0
-- **네이버 클라우드 플랫폼(NCP) 클라이언트 ID**
-
-## 3. 기본 지도 렌더링
+## 2. 지도 렌더링
 
 ```tsx
-import { Map } from "@rousen/react-naver-maps";
-
 function App() {
   return <Map ncpKeyId="your-ncp-key-id" />;
 }
 ```
 
-## 4. 마커 추가
+import BrowserOnly from "@docusaurus/BrowserOnly";
+import { Map } from "@rousen/react-naver-maps";
 
-```tsx
-import { Map, Marker } from "@rousen/react-naver-maps";
-
-function App() {
-  return (
-    <Map ncpKeyId="your-ncp-key-id">
-      <Marker position={{ x: 127.0276, y: 37.4979 }} />
-    </Map>
-  );
-}
-```
-
-## 5. SDK 설정 커스터마이즈
-
-`MapProvider`를 사용하면 SDK 로드 옵션을 제어할 수 있습니다.
-
-```tsx
-import { MapProvider, Map } from "@rousen/react-naver-maps";
-
-function App() {
-  return (
-    <MapProvider ncpKeyId="your-ncp-key-id" submodules={["geocoder"]}>
-      <Map />
-    </MapProvider>
-  );
-}
-```
+<BrowserOnly>{() => <BasicMapExample />}</BrowserOnly>
 
 ## 참고
 
-- `ncpKeyId` 발급 방법은 [ncpKeyId 발급](../ncp-key-id) 문서를 참고하세요.
+- `ncpKeyId`는 네이버 클라우드 플랫폼 콘솔에서 발급한 클라이언트 ID입니다.
 - 더 많은 예제는 [예제 보기](/examples/basic-map)에서 확인할 수 있습니다.
