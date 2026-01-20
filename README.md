@@ -1,6 +1,6 @@
 # react-naver-maps
 
-네이버 지도 API를 React에서 쉽게 사용할 수 있도록 만든 라이브러리입니다.
+네이버 지도 API v3를 React에서 쉽게 사용할 수 있도록 만든 라이브러리입니다. 공식 API 문서는 https://navermaps.github.io/maps.js.ncp/docs/index.html 를 참고하세요.
 
 ## 설치
 
@@ -10,6 +10,16 @@ npm install @rousen/react-naver-maps
 yarn add @rousen/react-naver-maps
 # 또는
 pnpm add @rousen/react-naver-maps
+```
+
+TypeScript에서 `naver.maps.*` 전역 타입을 쓰려면 `@types/navermaps`를 개발 의존성으로 추가하세요.
+
+```bash
+npm install -D @types/navermaps
+# 또는
+yarn add -D @types/navermaps
+# 또는
+pnpm add -D @types/navermaps
 ```
 
 ## 빠른 시작

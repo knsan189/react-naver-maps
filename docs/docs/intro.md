@@ -15,6 +15,12 @@ sidebar_position: 1
 npm install @rousen/react-naver-maps
 ```
 
+TypeScript에서 `naver.maps.*` 전역 타입을 쓰려면 `@types/navermaps`를 개발 의존성으로 추가하세요.
+
+```bash
+npm install -D @types/navermaps
+```
+
 ## 요구사항
 
 - **React** >= 16.8.0 (Hooks 지원 필요)
@@ -42,7 +48,7 @@ npm install @rousen/react-naver-maps
 
 ## TypeScript
 
-이 라이브러리는 TypeScript로 작성되어 있으며, 타입 정의가 포함되어 있습니다. 별도의 `@types` 패키지 설치가 필요하지 않습니다.
+이 라이브러리는 TypeScript로 작성되어 있으며, 라이브러리 자체의 타입 정의가 포함되어 있습니다. `naver.maps.*` 전역 타입을 직접 쓰는 경우에만 `@types/navermaps`가 필요합니다.
 
 ## 빠른 시작
 
@@ -70,7 +76,6 @@ function App() {
 - 📦 트리 쉐이킹 지원
 - 🔌 GL, Traffic, Transit 등 서브모듈 지원
 - ⚡ 풍부한 이벤트 핸들러 지원
-- ♻️ `reuseMap`으로 동일 `id` 지도 인스턴스 재사용 지원
 
 ## 다음 단계
 
