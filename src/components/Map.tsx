@@ -150,6 +150,7 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
 
     useEffect(() => {
       if (!isScriptLoaded || !containerRef.current) return;
+
       if (id === "current") {
         throw new Error("id cannot be 'current' use other id");
       }
@@ -157,23 +158,39 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       const mapId = id ?? "default";
       const existing = mountedMapContext.maps[mapId];
 
+      const parkMapElement = (map: naver.maps.Map) => {
+        const parking = mountedMapContext.getParkingContainer();
+        const element = map.getElement();
+        if (
+          parking &&
+          element &&
+          element.parentElement === containerRef.current
+        ) {
+          parking.appendChild(element);
+        }
+      };
+
       if (reuseMap && existing) {
         const existingElement = existing.getElement();
-        if (existingElement && existingElement !== containerRef.current) {
-          containerRef.current.innerHTML = "";
-          containerRef.current.appendChild(existingElement);
+
+        if (existingElement && containerRef.current) {
+          if (existingElement.parentElement !== containerRef.current) {
+            while (containerRef.current.firstChild) {
+              containerRef.current.removeChild(containerRef.current.firstChild);
+            }
+            containerRef.current.appendChild(existingElement);
+          }
         }
+
         existing.refresh();
+
         setMapInstance(existing);
-        mountedMapContext.onMount(existing, mapId);
         contextValueRef.current = existing;
+
         return () => {
+          parkMapElement(existing);
           mountedMapContext.onUnmount(mapId, { keep: true });
           contextValueRef.current = undefined;
-          const element = existing.getElement();
-          if (element?.parentElement) {
-            element.parentElement.removeChild(element);
-          }
         };
       }
 
@@ -181,17 +198,25 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
         ...mapOptions,
         gl: !disableGL,
       });
+
       setMapInstance(newInstance);
       mountedMapContext.onMount(newInstance, mapId);
       contextValueRef.current = newInstance;
+
       return () => {
+        if (reuseMap) {
+          parkMapElement(newInstance);
+          mountedMapContext.onUnmount(mapId, { keep: true });
+          contextValueRef.current = undefined;
+          return;
+        }
         mountedMapContext.onUnmount(mapId);
         contextValueRef.current = undefined;
         queueMicrotask(() => {
           newInstance.destroy();
         });
       };
-    }, [isScriptLoaded]);
+    }, [isScriptLoaded, reuseMap, id]);
 
     const handlersRef = useRef<
       Partial<Record<EventKey, (...args: unknown[]) => void>>

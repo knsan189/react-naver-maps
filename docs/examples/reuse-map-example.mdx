@@ -1,0 +1,55 @@
+---
+sidebar_position: 9
+---
+
+import { ReuseMapExample } from "@site/src/components/examples/reuseMapExample";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+
+# reuseMap 예제
+
+`reuseMap`은 동일한 `id`를 가진 지도 인스턴스를 재사용합니다.
+토글로 언마운트했다가 다시 마운트해도 같은 인스턴스를 쓰는지 확인할 수 있습니다.
+
+## 라이브 예제
+
+<BrowserOnly>{() => <ReuseMapExample />}</BrowserOnly>
+
+## 코드
+
+```tsx
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Map, MapProvider } from "@rousen/react-naver-maps";
+
+export default function ReuseMapExample() {
+  const [visible, setVisible] = useState(true);
+  const mapRef = useRef<naver.maps.Map>();
+  const lastRef = useRef<naver.maps.Map>();
+  const [mapInstance, setMapInstance] = useState<naver.maps.Map | null>(null);
+
+  const handleMapRef = useCallback((instance?: naver.maps.Map) => {
+    mapRef.current = instance;
+    setMapInstance(instance ?? null);
+  }, []);
+
+  useEffect(() => {
+    if (!visible || !mapInstance) return;
+    if (lastRef.current) {
+      console.log("same instance:", mapInstance === lastRef.current);
+    }
+    lastRef.current = mapInstance;
+  }, [mapInstance, visible]);
+
+  return (
+    <MapProvider>
+      <button onClick={() => setVisible((v) => !v)}>toggle</button>
+      <div style={{ width: "100%", height: 360, marginTop: 12 }}>
+        {visible && (
+          <Map id="reuse" reuseMap ncpKeyId="your-ncp-key-id" ref={handleMapRef} />
+        )}
+      </div>
+    </MapProvider>
+  );
+}
+```
+
+콘솔에 `same instance: true`가 출력되면 재사용이 정상 동작합니다.

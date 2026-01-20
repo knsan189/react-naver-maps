@@ -1,16 +1,24 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createContext } from "react";
 
 export interface MountedMapContextType {
   maps: { [id: string]: naver.maps.Map };
   onMount: (map: naver.maps.Map, id?: string) => void;
   onUnmount: (id?: string, options?: { keep?: boolean }) => void;
+  getParkingContainer: () => HTMLDivElement | null;
 }
 
 export const MountedMapContext = createContext<MountedMapContextType>({
   maps: {},
   onMount: () => {},
   onUnmount: () => {},
+  getParkingContainer: () => null,
 });
 
 interface MapProviderProps {
@@ -19,6 +27,9 @@ interface MapProviderProps {
 
 const MapProvider = ({ children }: MapProviderProps) => {
   const [maps, setMaps] = useState<{ [id: string]: naver.maps.Map }>({});
+
+  const parkingRef = useRef<HTMLDivElement>(null);
+  const getParkingContainer = useCallback(() => parkingRef.current, []);
 
   const onMount = useCallback((map: naver.maps.Map, id: string = "default") => {
     setMaps((prev) => ({ ...prev, [id]: map }));
@@ -37,11 +48,26 @@ const MapProvider = ({ children }: MapProviderProps) => {
   );
 
   const value = useMemo(
-    () => ({ maps, onMount, onUnmount }),
-    [maps, onMount, onUnmount]
+    () => ({ maps, onMount, onUnmount, getParkingContainer }),
+    [maps, onMount, onUnmount, getParkingContainer]
   );
+
   return (
     <MountedMapContext.Provider value={value}>
+      <div
+        ref={parkingRef}
+        aria-hidden
+        style={{
+          position: "absolute",
+          left: -100000,
+          top: -100000,
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+          pointerEvents: "none",
+          visibility: "hidden",
+        }}
+      />
       {children}
     </MountedMapContext.Provider>
   );

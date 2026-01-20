@@ -11,6 +11,7 @@ const sidebars: SidebarsConfig = {
     "data-layer-example",
     "mapprovider-example",
     "raster-map-example",
+    "reuse-map-example",
   ],
 };
 
