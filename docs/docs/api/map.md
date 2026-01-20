@@ -31,14 +31,15 @@ function App() {
 
 ### 선택 Props
 
-| Prop         | Type                                | Default    | Description                                                   |
-| ------------ | ----------------------------------- | ---------- | ------------------------------------------------------------- |
-| `id`         | `string`                            | -          | 지도 컨테이너의 ID                                            |
-| `mapTypeId`  | `naver.maps.MapTypeId`              | `"normal"` | 지도 타입 (normal, satellite, hybrid, terrain)                |
-| `mapOptions` | `Omit<naver.maps.MapOptions, "gl">` | -          | 네이버 지도 옵션 (`gl`은 내부에서 관리)                       |
-| `submodules` | `NaverMapsSubmodule[]`              | `[]`       | 로드할 서브모듈 (`gl`은 기본 포함, 여기에 넣지 않아도 됩니다) |
-| `style`      | `React.CSSProperties`               | -          | 지도 컨테이너 스타일                                          |
-| `disableGL`  | `boolean`                           | `false`    | GL 렌더링/GL 서브모듈 비활성화 (필요 시에만 사용)             |
+| Prop         | Type                                | Default    | Description                                                           |
+| ------------ | ----------------------------------- | ---------- | --------------------------------------------------------------------- |
+| `id`         | `string`                            | -          | 지도 컨테이너의 ID (`current`는 예약 값이라 사용할 수 없습니다)       |
+| `mapTypeId`  | `naver.maps.MapTypeId`              | `"normal"` | 지도 타입 (normal, satellite, hybrid, terrain)                        |
+| `mapOptions` | `Omit<naver.maps.MapOptions, "gl">` | -          | 네이버 지도 옵션 (`gl`은 내부에서 관리)                               |
+| `children`   | `React.ReactNode`                   | -          | 지도 위에 렌더링할 오버레이 컴포넌트                                  |
+| `submodules` | `NaverMapsSubmodule[]`              | `[]`       | 로드할 서브모듈 (`gl`은 기본 포함, 여기에 넣지 않아도 됩니다)         |
+| `style`      | `React.CSSProperties`               | -          | 지도 컨테이너 스타일                                                  |
+| `disableGL`  | `boolean`                           | `false`    | GL 렌더링/GL 서브모듈 비활성화 (필요 시에만 사용, 비GL 렌더러로 강제) |
 
 ### 이벤트 핸들러
 
@@ -74,6 +75,19 @@ function App() {
 | `onPinchStart`         | `(event: naver.maps.PointerEvent) => void`      | 핀치 제스처가 시작될 때 호출됩니다 (모바일)    |
 | `onProjectionChanged`  | `(projection: naver.maps.Projection) => void`   | 지도 투영법이 변경되었을 때 호출됩니다         |
 | `onSizeChanged`        | `(size: naver.maps.Size) => void`               | 지도 크기가 변경되었을 때 호출됩니다           |
+| `onTap`                | `(event: naver.maps.PointerEvent) => void`      | 지도를 탭했을 때 호출됩니다 (모바일)           |
+| `onTilesLoaded`        | `() => void`                                    | 타일이 모두 로드되었을 때 호출됩니다           |
+| `onTouchEnd`           | `() => void`                                    | 터치가 끝났을 때 호출됩니다 (모바일)           |
+| `onTouchMove`          | `(event: naver.maps.PointerEvent) => void`      | 터치 이동 시 호출됩니다 (모바일)               |
+| `onTouchStart`         | `(event: naver.maps.PointerEvent) => void`      | 터치가 시작될 때 호출됩니다 (모바일)           |
+| `onTwoFingerTap`       | `(event: naver.maps.PointerEvent) => void`      | 두 손가락 탭 시 호출됩니다 (모바일)            |
+| `onZoomChanged`        | `(zoom: number) => void`                        | 줌 레벨이 변경될 때 호출됩니다                 |
+
+## 동작 노트
+
+- `mapOptions`는 내부에서 `setOptions`로 적용됩니다. 변경 시 전체 옵션이 갱신됩니다.
+- `mapTypeId`는 생성 이후 별도로 `setMapTypeId`로 반영됩니다.
+- `submodules`는 SDK 로딩 시 반영됩니다. 기본값으로 `gl`이 포함됩니다.
 
 ## 예제
 

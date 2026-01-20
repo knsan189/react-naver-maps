@@ -15,8 +15,6 @@ import useScriptLoader from "../hooks/useScriptLoader";
 
 const EVENT_TO_PROP = {
   init: "onInit",
-  zoomstart: "onZoomStart",
-  zoomend: "onZoomEnd",
   bounds_changed: "onBoundsChanged",
   dragstart: "onDragStart",
   dragend: "onDragEnd",
@@ -42,6 +40,15 @@ const EVENT_TO_PROP = {
   projection_changed: "onProjectionChanged",
   removeLayer: "onRemoveLayer",
   size_changed: "onSizeChanged",
+  tap: "onTap",
+  tilesloaded: "onTilesLoaded",
+  touchend: "onTouchEnd",
+  touchstart: "onTouchStart",
+  touchmove: "onTouchMove",
+  twofintertap: "onTwoFingerTap",
+  zoom_changed: "onZoomChanged",
+  zoomend: "onZoomEnd",
+  zoomstart: "onZoomStart",
 } as const;
 
 type EventKey = keyof typeof EVENT_TO_PROP;
@@ -55,9 +62,6 @@ interface MapCallbacks {
   dbclick?: (event: naver.maps.PointerEvent) => void;
   doubletap?: (event: naver.maps.PointerEvent) => void;
   bounds_changed?: (bounds: naver.maps.Bounds) => void;
-  zoomstart?: () => void;
-  zoomend?: () => void;
-  zoom_changed?: (zoom: number) => void;
   drag?: (event: naver.maps.PointerEvent) => void;
   dragstart?: (event: naver.maps.PointerEvent) => void;
   dragend?: (event: naver.maps.PointerEvent) => void;
@@ -65,12 +69,6 @@ interface MapCallbacks {
   init?: () => void;
   scroll?: () => void;
   rightclick?: (event: naver.maps.PointerEvent) => void;
-  tap?: (event: naver.maps.PointerEvent) => void;
-  tiles_loaded?: () => void;
-  touchend?: (event: naver.maps.PointerEvent) => void;
-  touchstart?: (event: naver.maps.PointerEvent) => void;
-  touchmove?: (event: naver.maps.PointerEvent) => void;
-  twofintertap?: (event: naver.maps.PointerEvent) => void;
   keydown?: (event: naver.maps.DOMEvent) => void;
   keyup?: (event: naver.maps.DOMEvent) => void;
   longtap?: (event: naver.maps.PointerEvent) => void;
@@ -88,6 +86,15 @@ interface MapCallbacks {
   removeLayer?: (layerName: naver.maps.Layer["name"]) => void;
   resize?: () => void;
   size_changed?: (size: naver.maps.Size) => void;
+  tap?: (event: naver.maps.PointerEvent) => void;
+  tilesloaded?: () => void;
+  touchend?: () => void;
+  touchmove?: (event: naver.maps.PointerEvent) => void;
+  touchstart?: (event: naver.maps.PointerEvent) => void;
+  twofintertap?: (event: naver.maps.PointerEvent) => void;
+  zoom_changed?: (zoom: number) => void;
+  zoomstart?: () => void;
+  zoomend?: () => void;
 }
 
 type HandlerOfProp<P extends PropKey> = MapCallbacks[{

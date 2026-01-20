@@ -5,6 +5,7 @@ sidebar_position: 1
 # Intro
 
 `@rousen/react-naver-maps`는 네이버 지도 API를 React에서 쉽게 사용할 수 있도록 만든 라이브러리입니다.
+`react-map-gl`의 설계와 사용성에서 아이디어를 가져와 React 친화적인 API를 제공합니다.
 
 ## 설치
 
@@ -12,18 +13,6 @@ sidebar_position: 1
 
 ```bash
 npm install @rousen/react-naver-maps
-```
-
-### Yarn
-
-```bash
-yarn add @rousen/react-naver-maps
-```
-
-### PNPM
-
-```bash
-pnpm add @rousen/react-naver-maps
 ```
 
 ## 요구사항
