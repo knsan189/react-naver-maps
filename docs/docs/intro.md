@@ -70,6 +70,7 @@ function App() {
 - 📦 트리 쉐이킹 지원
 - 🔌 GL, Traffic, Transit 등 서브모듈 지원
 - ⚡ 풍부한 이벤트 핸들러 지원
+- ♻️ `reuseMap`으로 동일 `id` 지도 인스턴스 재사용 지원
 
 ## 다음 단계
 
