@@ -34,7 +34,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={`${siteConfig.title} - React library for Naver Maps`}
-      description="네이버 지도 API를 React에서 쉽게 사용할 수 있도록 만든 라이브러리"
+      description="Naver Maps v3 API를 React에서 쉽게 사용할 수 있도록 만든 라이브러리"
     >
       <HomepageHeader />
       <main>
