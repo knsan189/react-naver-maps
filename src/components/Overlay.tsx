@@ -13,19 +13,18 @@ interface Props {
   anchor?: OverlayAnchorType;
 }
 
-const Overlay = ({ children, ...options }: Props) => {
+const Overlay = ({ children, position, zIndex, anchor }: Props) => {
   const { current: map } = useMap();
   const containerRef = useRef<HTMLDivElement>(null);
   const [instance, setInstance] = useState<InstanceType<CustomOverlayCtor>>();
+  const prevPositionRef = useRef<naver.maps.LatLng>(undefined);
 
   useEffect(() => {
     if (!map || !containerRef.current) return;
-
     const CustomOverlay = createCustomOverlayClass();
-
     const newInstance = new CustomOverlay({
       element: containerRef.current,
-      ...options,
+      position,
     });
     newInstance.setMap(map);
     setInstance(newInstance);
@@ -36,18 +35,25 @@ const Overlay = ({ children, ...options }: Props) => {
 
   useEffect(() => {
     if (!instance) return;
-    instance.setPosition(options.position);
-  }, [instance, options.position]);
+    const next =
+      position instanceof naver.maps.LatLng
+        ? position
+        : new naver.maps.LatLng(position);
+    if (!prevPositionRef.current?.equals(next)) {
+      instance.setPosition(next);
+      prevPositionRef.current = next;
+    }
+  }, [instance, position]);
 
   useEffect(() => {
     if (!instance) return;
-    instance.setZIndex(options.zIndex);
-  }, [instance, options.zIndex]);
+    instance.setZIndex(zIndex);
+  }, [instance, zIndex]);
 
   useEffect(() => {
     if (!instance) return;
-    instance.setAnchor(options.anchor);
-  }, [instance, options.anchor]);
+    instance.setAnchor(anchor);
+  }, [instance, anchor]);
 
   return (
     <div>

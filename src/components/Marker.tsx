@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   forwardRef,
   useEffect,
@@ -70,12 +69,26 @@ type BaseMarkerProps = Omit<naver.maps.MarkerOptions, "map">;
 export interface MarkerProps extends BaseMarkerProps, MarkerEventProps {}
 
 const Marker = forwardRef<naver.maps.Marker, MarkerProps>(
-  (props: MarkerProps, ref: React.Ref<naver.maps.Marker | undefined>) => {
+  (
+    {
+      position,
+      animation,
+      clickable,
+      zIndex,
+      cursor,
+      draggable,
+      icon,
+      shape,
+      title,
+      visible,
+      ...props
+    },
+    ref: React.Ref<naver.maps.Marker | undefined>
+  ) => {
     const { current: map } = useMap();
     const [instance, setInstance] = useState<naver.maps.Marker>();
 
     const eventProps: MarkerEventProps = {};
-    const options: Partial<naver.maps.MarkerOptions> = {};
 
     (Object.keys(props) as Array<keyof MarkerProps>).forEach((key) => {
       const propKey = key as PropKey;
@@ -88,19 +101,23 @@ const Marker = forwardRef<naver.maps.Marker, MarkerProps>(
         if (value !== undefined) {
           (eventProps as Record<string, unknown>)[propKey] = value;
         }
-      } else {
-        const value = props[key];
-        if (value !== undefined) {
-          (options as Record<string, unknown>)[key] = value;
-        }
       }
     });
 
     useEffect(() => {
       if (!map) return undefined;
-      const newInstance = new naver.maps.Marker(
-        options as naver.maps.MarkerOptions
-      );
+      const newInstance = new naver.maps.Marker({
+        position,
+        animation,
+        clickable,
+        zIndex,
+        cursor,
+        draggable,
+        icon,
+        shape,
+        title,
+        visible,
+      });
       setInstance(newInstance);
       newInstance.setMap(map);
       return () => {
@@ -109,75 +126,74 @@ const Marker = forwardRef<naver.maps.Marker, MarkerProps>(
       };
     }, [map]);
 
+    const prevPositionRef = useRef<naver.maps.LatLng>(undefined);
+
     useEffect(() => {
       if (!instance) return;
-      const position = (options as naver.maps.MarkerOptions).position;
       if (position) {
-        instance.setPosition(position);
+        const next =
+          position instanceof naver.maps.LatLng
+            ? position
+            : new naver.maps.LatLng(position);
+        if (!prevPositionRef.current?.equals(next)) {
+          instance.setPosition(next);
+          prevPositionRef.current = next;
+        }
       }
-    }, [instance, options]);
+    }, [instance, position]);
 
     useEffect(() => {
       if (!instance) return;
-      const animation = (options as naver.maps.MarkerOptions).animation;
       instance.setAnimation(animation ?? null);
-    }, [instance, options]);
+    }, [instance, animation]);
 
     useEffect(() => {
       if (!instance) return;
-      const clickable = (options as naver.maps.MarkerOptions).clickable;
       instance.setClickable(clickable ?? false);
-    }, [instance, options]);
+    }, [instance, clickable]);
 
     useEffect(() => {
       if (!instance) return;
-      const zIndex = (options as naver.maps.MarkerOptions).zIndex;
       if (zIndex !== undefined) {
         instance.setZIndex(zIndex);
       }
-    }, [instance, options]);
+    }, [instance, zIndex]);
 
     useEffect(() => {
       if (!instance) return;
-      const cursor = (options as naver.maps.MarkerOptions).cursor;
       instance.setCursor(cursor ?? "");
-    }, [instance, options]);
+    }, [instance, cursor]);
 
     useEffect(() => {
       if (!instance) return;
-      const draggable = (options as naver.maps.MarkerOptions).draggable;
       instance.setDraggable(draggable ?? false);
-    }, [instance, options]);
+    }, [instance, draggable]);
 
     useEffect(() => {
       if (!instance) return;
-      const icon = (options as naver.maps.MarkerOptions).icon;
       if (icon) {
         instance.setIcon(icon);
       }
-    }, [instance, options]);
+    }, [instance, icon]);
 
     useEffect(() => {
       if (!instance) return;
-      const shape = (options as naver.maps.MarkerOptions).shape;
       if (shape) {
         instance.setShape(shape);
       }
-    }, [instance, options]);
+    }, [instance, shape]);
 
     useEffect(() => {
       if (!instance) return;
-      const title = (options as naver.maps.MarkerOptions).title;
       if (title) {
         instance.setTitle(title);
       }
-    }, [instance, options]);
+    }, [instance, title]);
 
     useEffect(() => {
       if (!instance) return;
-      const visible = (options as naver.maps.MarkerOptions).visible;
       instance.setVisible(visible ?? true);
-    }, [instance, options]);
+    }, [instance, visible]);
 
     const handlersRef = useRef<
       Partial<Record<EventKey, (...args: unknown[]) => void>>
