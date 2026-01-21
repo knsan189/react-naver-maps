@@ -9,7 +9,7 @@ export const OverlayExample: React.FC<MapExampleProps> = ({
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
       <Map
         ncpKeyId={ncpKeyId}
-        mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 14 }}
+        initialOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 14 }}
       >
         <Overlay
           position={{ x: 127.0276, y: 37.4979 }}

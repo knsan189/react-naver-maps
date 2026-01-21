@@ -1,0 +1,87 @@
+---
+sidebar_position: 3
+---
+
+import BrowserOnly from "@docusaurus/BrowserOnly";
+import { BasicMapExample } from "@site/src/components/examples/basicMapExample";
+import { StateManagementControlledExample } from "@site/src/components/examples/stateManagementControlledExample";
+
+# State Management
+
+`react-naver-maps`의 대부분 컴포넌트는 **uncontrolled** 방식으로 동작합니다. 즉, 생성 시 초기값을 주고 이후에는 네이버 지도 인스턴스가 상태를 관리합니다. 반대로 **controlled** 방식은 React state를 기준으로 항상 값을 밀어 넣는 형태입니다.
+
+## 언제 uncontrolled가 좋을까요?
+
+- 지도 상호작용(드래그/줌)이 많고, 자연스러운 UX가 중요한 경우
+- 내부 상태를 네이버 지도 SDK에 맡기는 편이 더 간단한 경우
+- 큰 데이터나 이벤트가 잦아 React 렌더링 비용을 줄이고 싶은 경우
+
+## 언제 controlled가 필요할까요?
+
+- URL 상태, 전역 스토어와 강하게 동기화해야 하는 경우
+- 외부 입력(버튼/폼)으로 지도 상태를 명확히 통제해야 하는 경우
+- 특정 시점에만 값을 확정적으로 갱신해야 하는 경우
+
+## Uncontrolled
+
+### 라이브 예제
+
+<BrowserOnly>{() => <BasicMapExample />}</BrowserOnly>
+
+### 코드
+
+```tsx
+import { Map } from "@rousen/react-naver-maps";
+
+function App() {
+  return (
+    <Map
+      ncpKeyId="your-ncp-key-id"
+      initialOptions={{
+        zoom: 13,
+        center: { lat: 37.566826, lng: 126.9786566 },
+      }}
+    />
+  );
+}
+```
+
+## Controlled
+
+### 라이브 예제
+
+<BrowserOnly>{() => <StateManagementControlledExample />}</BrowserOnly>
+
+### 코드
+
+```tsx
+import { Map } from "@rousen/react-naver-maps";
+import { useState } from "react";
+
+function App() {
+  const [zoom, setZoom] = useState(13);
+  const [center, setCenter] = useState<naver.maps.Coord>({
+    x: 126.9786566,
+    y: 37.566826,
+  });
+
+  return (
+    <>
+      <Map
+        ncpKeyId="your-ncp-key-id"
+        center={center}
+        zoom={zoom}
+        initialOptions={{ center, zoom }}
+        onCenterChanged={(nextCenter) => setCenter(nextCenter)}
+        onZoomChanged={(nextZoom) => setZoom(nextZoom)}
+      />
+      <button onClick={() => setZoom((z) => z + 1)}>줌 인</button>
+    </>
+  );
+}
+```
+
+## 주의 사항
+
+- `initialOptions`는 지도 생성 시에만 적용됩니다. 변경이 필요한 값은 `center`, `zoom`으로 제어하세요.
+- `center`, `zoom`은 변경 시 지도 인스턴스에 즉시 반영됩니다.

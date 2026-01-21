@@ -41,11 +41,11 @@ export const DataLayerGeoJsonExample: React.FC<MapExampleProps> = ({
       <div style={{ width: "100%", height: "400px" }}>
         <Map
           ncpKeyId={ncpKeyId}
-          mapOptions={{ center: { x: 126.977, y: 37.568 }, zoom: 14 }}
+          initialOptions={{ center: { x: 126.977, y: 37.568 }, zoom: 14 }}
         >
           <DataLayer
             type="geojson"
-            url={geojsonUrl}
+            data={geojsonUrl}
             style={geojsonStyle}
             onClick={(event) => {
               const name = event.feature.getProperty("name");

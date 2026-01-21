@@ -24,7 +24,7 @@ export const DynamicCircleExample: React.FC<MapExampleProps> = ({
       <div style={{ width: "100%", height: "400px" }}>
         <Map
           ncpKeyId={ncpKeyId}
-          mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 14 }}
+          initialOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 14 }}
         >
           <Circle
             center={{ lat: 37.5665, lng: 126.978 }}

@@ -4,7 +4,7 @@ sidebar_position: 9
 
 # DataLayer
 
-`DataLayer` 컴포넌트는 `geojson/gpx/kml` 데이터를 URL로 로딩해 지도에 표시합니다.
+`DataLayer` 컴포넌트는 `geojson/gpx/kml` 데이터를 지도에 표시합니다.
 
 ## 기본 사용법
 
@@ -14,7 +14,7 @@ import { DataLayer, Map } from "@rousen/react-naver-maps";
 function App() {
   return (
     <Map ncpKeyId="your-ncp-key-id">
-      <DataLayer type="geojson" url="/data/sample-geojson.json" />
+      <DataLayer type="geojson" data="/data/sample-geojson.json" />
     </Map>
   );
 }
@@ -24,14 +24,14 @@ function App() {
 
 ### 주요 Props
 
-| Prop        | Type                                                    | Default | Description           |
-| ----------- | ------------------------------------------------------- | ------- | --------------------- |
-| `type`      | `"geojson" \| "gpx" \| "kml"`                           | -       | 데이터 타입 (필수)    |
-| `url`       | `string`                                                | -       | 데이터 URL (필수)     |
-| `autoStyle` | `boolean`                                               | `true`  | 자동 스타일 적용 여부 |
-| `style`     | `naver.maps.StyleOptions \| naver.maps.StylingFunction` | -       | 데이터 레이어 스타일  |
-| `onLoad`    | `(layer: naver.maps.Data) => void`                      | -       | 로딩 완료 시          |
-| `onError`   | `(error: Error) => void`                                | -       | 로딩 실패 시          |
+| Prop        | Type                                                               | Default | Description                   |
+| ----------- | ------------------------------------------------------------------ | ------- | ----------------------------- |
+| `type`      | `"geojson" \| "gpx" \| "kml"`                                      | -       | 데이터 타입 (필수)            |
+| `data`      | `string \| naver.maps.GeoJSON \| naver.maps.GPX \| naver.maps.KML` | -       | URL 또는 파싱된 데이터 (필수) |
+| `autoStyle` | `boolean`                                                          | `true`  | 자동 스타일 적용 여부         |
+| `style`     | `naver.maps.StyleOptions \| naver.maps.StylingFunction`            | -       | 데이터 레이어 스타일          |
+| `onLoad`    | `(layer: naver.maps.Data) => void`                                 | -       | 로딩 완료 시                  |
+| `onError`   | `(error: Error) => void`                                           | -       | 로딩 실패 시                  |
 
 ### 이벤트 핸들러
 
@@ -60,7 +60,7 @@ function App() {
 <Map ncpKeyId="your-ncp-key-id">
   <DataLayer
     type="geojson"
-    url="/data/sample-geojson.json"
+    data="/data/sample-geojson.json"
     style={{
       fillColor: "#60a5fa",
       fillOpacity: 0.35,
@@ -82,7 +82,7 @@ function App() {
 <Map ncpKeyId="your-ncp-key-id">
   <DataLayer
     type="gpx"
-    url="/data/sample-gpx.gpx"
+    data="/data/sample-gpx.gpx"
     onLoad={() => console.log("GPX 로딩 완료")}
     onError={(error) => console.error("GPX 로딩 실패", error)}
     style={{ strokeColor: "#22c55e", strokeWeight: 3 }}
@@ -92,5 +92,6 @@ function App() {
 
 ## 참고
 
-- `url`은 브라우저에서 접근 가능한 경로여야 하며, 외부 도메인일 경우 CORS 설정이 필요합니다.
+- `data`에 URL 문자열을 전달하면 내부에서 fetch로 로딩합니다. 외부 도메인일 경우 CORS 설정이 필요합니다.
+- `data`에 객체를 전달하는 경우 타입에 맞는 값(`GeoJSON`, `GPX`, `KML`)을 넘겨주세요.
 - `style`은 `naver.maps.Data.setStyle`로 적용됩니다.

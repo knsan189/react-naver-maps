@@ -24,7 +24,7 @@ function App() {
     <Map
       ncpKeyId="your-ncp-key-id"
       disableGL
-      mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 12 }}
+      initialOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 12 }}
     />
   );
 }
@@ -67,7 +67,7 @@ function RasterMapPolylineExample() {
     <Map
       ncpKeyId="your-ncp-key-id"
       disableGL
-      mapOptions={{
+      initialOptions={{
         center: { x: 127.0276, y: 37.4979 },
         zoom: 13,
       }}

@@ -35,11 +35,11 @@ export const DataLayerGpxExample: React.FC<MapExampleProps> = ({
       <div style={{ width: "100%", height: "400px" }}>
         <Map
           ncpKeyId={ncpKeyId}
-          mapOptions={{ center: { x: 126.977, y: 37.568 }, zoom: 11 }}
+          initialOptions={{ center: { x: 126.977, y: 37.568 }, zoom: 11 }}
         >
           <DataLayer
             type="gpx"
-            url={gpxUrl}
+            data={gpxUrl}
             style={gpxStyle}
             onLoad={() => setGpxStatus("로딩 완료")}
             onError={() => setGpxStatus("로딩 실패")}

@@ -16,7 +16,7 @@ export const MapEventsExample: React.FC<MapExampleProps> = ({
       <div style={{ width: "100%", height: "400px" }}>
         <Map
           ncpKeyId={ncpKeyId}
-          mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 12 }}
+          initialOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 12 }}
           onClick={() => addEvent("지도 클릭")}
           onZoomStart={() => addEvent("줌 시작")}
           onZoomEnd={() => addEvent("줌 종료")}

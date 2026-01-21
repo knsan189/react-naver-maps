@@ -20,7 +20,7 @@ export const ClickToAddMarkerExample: React.FC<MapExampleProps> = ({
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
       <Map
         ncpKeyId={ncpKeyId}
-        mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 13 }}
+        initialOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 13 }}
         onClick={handleMapClick}
       >
         {markers.map((marker) => (

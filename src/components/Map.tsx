@@ -109,12 +109,14 @@ export interface MapProps extends MapEventProps {
   ncpKeyId: string;
   id?: string;
   mapTypeId?: naver.maps.MapTypeId;
-  mapOptions?: Omit<naver.maps.MapOptions, "gl">;
+  initialOptions?: Omit<naver.maps.MapOptions, "gl">;
   children?: ReactNode;
   submodules?: NaverMapsSubmodule[];
   style?: React.CSSProperties;
   disableGL?: boolean;
   reuseMap?: boolean;
+  center?: naver.maps.MapOptions["center"];
+  zoom?: naver.maps.MapOptions["zoom"];
 }
 
 const Map = forwardRef<naver.maps.Map, MapProps>(
@@ -124,11 +126,13 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       mapTypeId = "normal" as naver.maps.MapTypeId,
       ncpKeyId,
       children,
-      mapOptions = {},
+      initialOptions = {},
       submodules = [],
       style,
       disableGL = false,
       reuseMap = false,
+      center,
+      zoom,
       ...eventProps
     }: MapProps,
     ref: React.Ref<naver.maps.Map | undefined>
@@ -143,10 +147,6 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       submodules,
       disableGL,
     });
-
-    const keyedMapOptions = useMemo(() => {
-      return JSON.stringify(mapOptions) || "";
-    }, [mapOptions]);
 
     useEffect(() => {
       if (!isScriptLoaded || !containerRef.current) return;
@@ -195,7 +195,7 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       }
 
       const newInstance = new naver.maps.Map(containerRef.current, {
-        ...mapOptions,
+        ...initialOptions,
         gl: !disableGL,
       });
 
@@ -255,10 +255,27 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
       return () => disposers.forEach((d) => d());
     }, [mapInstance]);
 
+    const prevCenterRef = useRef<naver.maps.LatLng | undefined>(undefined);
+
     useEffect(() => {
-      if (!mapInstance) return;
-      mapInstance.setOptions(JSON.parse(keyedMapOptions));
-    }, [mapInstance, keyedMapOptions]);
+      if (!mapInstance || !center) return;
+      const next =
+        center instanceof naver.maps.LatLng
+          ? center
+          : new naver.maps.LatLng(center);
+
+      if (!prevCenterRef.current?.equals(next)) {
+        mapInstance.setCenter(next);
+        prevCenterRef.current = next;
+      }
+    }, [mapInstance, center]);
+
+    useEffect(() => {
+      if (!mapInstance || !zoom) return;
+      if (zoom !== undefined) {
+        mapInstance.setZoom(zoom, true);
+      }
+    }, [mapInstance, zoom]);
 
     useImperativeHandle(ref, () => contextValueRef.current, [mapInstance]);
 

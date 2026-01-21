@@ -31,16 +31,18 @@ function App() {
 
 ### 선택 Props
 
-| Prop         | Type                                | Default    | Description                                                           |
-| ------------ | ----------------------------------- | ---------- | --------------------------------------------------------------------- |
-| `id`         | `string`                            | -          | 지도 컨테이너의 ID (`current`는 예약 값이라 사용할 수 없습니다)       |
-| `mapTypeId`  | `naver.maps.MapTypeId`              | `"normal"` | 지도 타입 (normal, satellite, hybrid, terrain)                        |
-| `mapOptions` | `Omit<naver.maps.MapOptions, "gl">` | -          | 네이버 지도 옵션 (`gl`은 내부에서 관리)                               |
-| `children`   | `React.ReactNode`                   | -          | 지도 위에 렌더링할 오버레이 컴포넌트                                  |
-| `submodules` | `NaverMapsSubmodule[]`              | `[]`       | 로드할 서브모듈 (`gl`은 기본 포함, 여기에 넣지 않아도 됩니다)         |
-| `style`      | `React.CSSProperties`               | -          | 지도 컨테이너 스타일                                                  |
-| `disableGL`  | `boolean`                           | `false`    | GL 렌더링/GL 서브모듈 비활성화 (필요 시에만 사용, 비GL 렌더러로 강제) |
-| `reuseMap`   | `boolean`                           | `false`    | 동일 `id`의 지도 인스턴스를 재사용합니다 (`MapProvider` 필요)         |
+| Prop             | Type                                | Default    | Description                                                           |
+| ---------------- | ----------------------------------- | ---------- | --------------------------------------------------------------------- |
+| `id`             | `string`                            | -          | 지도 컨테이너의 ID (`current`는 예약 값이라 사용할 수 없습니다)       |
+| `mapTypeId`      | `naver.maps.MapTypeId`              | `"normal"` | 지도 타입 (normal, satellite, hybrid, terrain)                        |
+| `initialOptions` | `Omit<naver.maps.MapOptions, "gl">` | -          | 지도 생성 시 초기 옵션 (`gl`은 내부에서 관리)                         |
+| `center`         | `naver.maps.MapOptions["center"]`   | -          | 지도 중심 좌표 (controlled)                                           |
+| `zoom`           | `naver.maps.MapOptions["zoom"]`     | -          | 지도 줌 레벨 (controlled)                                             |
+| `children`       | `React.ReactNode`                   | -          | 지도 위에 렌더링할 오버레이 컴포넌트                                  |
+| `submodules`     | `NaverMapsSubmodule[]`              | `[]`       | 로드할 서브모듈 (`gl`은 기본 포함, 여기에 넣지 않아도 됩니다)         |
+| `style`          | `React.CSSProperties`               | -          | 지도 컨테이너 스타일                                                  |
+| `disableGL`      | `boolean`                           | `false`    | GL 렌더링/GL 서브모듈 비활성화 (필요 시에만 사용, 비GL 렌더러로 강제) |
+| `reuseMap`       | `boolean`                           | `false`    | 동일 `id`의 지도 인스턴스를 재사용합니다 (`MapProvider` 필요)         |
 
 ### 이벤트 핸들러
 
@@ -86,7 +88,8 @@ function App() {
 
 ## 동작 노트
 
-- `mapOptions`는 내부에서 `setOptions`로 적용됩니다. 변경 시 전체 옵션이 갱신됩니다.
+- `initialOptions`는 지도 생성 시에만 적용됩니다.
+- `center`, `zoom`은 변경 시 각각 `setCenter`, `setZoom`으로 반영됩니다.
 - `mapTypeId`는 생성 이후 별도로 `setMapTypeId`로 반영됩니다.
 - `submodules`는 SDK 로딩 시 반영됩니다. 기본값으로 `gl`이 포함됩니다.
 - `reuseMap`은 동일 `id` 기준으로만 동작하며, 언마운트 시 인스턴스를 유지합니다.
@@ -110,7 +113,7 @@ function App() {
 ```tsx
 <Map
   ncpKeyId="your-ncp-key-id"
-  mapOptions={{
+  initialOptions={{
     center: new naver.maps.LatLng(37.4979, 127.0276),
     zoom: 15,
   }}
@@ -241,7 +244,7 @@ function GLPolylineExample() {
   return (
     <Map
       ncpKeyId="your-ncp-key-id"
-      mapOptions={{
+      initialOptions={{
         center: { x: 127.0276, y: 37.4979 },
         zoom: 13,
       }}

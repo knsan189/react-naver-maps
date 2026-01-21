@@ -15,7 +15,7 @@ export const MultipleMarkersExample: React.FC<MapExampleProps> = ({
     <div style={{ width: "100%", height: "400px", margin: "20px 0" }}>
       <Map
         ncpKeyId={ncpKeyId}
-        mapOptions={{ center: { x: 126.976, y: 37.5303 }, zoom: 11 }}
+        initialOptions={{ center: { x: 126.976, y: 37.5303 }, zoom: 11 }}
       >
         {locations.map((location, index) => (
           <Marker

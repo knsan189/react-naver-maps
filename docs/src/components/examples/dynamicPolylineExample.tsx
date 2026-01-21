@@ -39,7 +39,7 @@ export const DynamicPolylineExample: React.FC<MapExampleProps> = ({
       <div style={{ width: "100%", height: "400px" }}>
         <Map
           ncpKeyId={ncpKeyId}
-          mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 15 }}
+          initialOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 15 }}
         >
           <Polyline
             path={path}

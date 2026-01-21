@@ -34,14 +34,14 @@ export const MapProviderExample: React.FC<MapExampleProps> = ({
           <Map
             id="left"
             ncpKeyId={ncpKeyId}
-            mapOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 11 }}
+            initialOptions={{ center: { x: 126.978, y: 37.5665 }, zoom: 11 }}
           />
         </div>
         <div style={{ width: "50%", height: "300px" }}>
           <Map
             id="right"
             ncpKeyId={ncpKeyId}
-            mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 13 }}
+            initialOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 13 }}
           />
         </div>
       </div>

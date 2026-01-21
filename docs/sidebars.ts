@@ -23,7 +23,10 @@ const sidebars: SidebarsConfig = {
       type: "category",
       label: "Developer Guide",
       link: { type: "doc", id: "developer-guide/index" },
-      items: ["developer-guide/get-started"],
+      items: [
+        "developer-guide/get-started",
+        "developer-guide/state-management",
+      ],
     },
     {
       type: "category",
@@ -39,6 +42,7 @@ const sidebars: SidebarsConfig = {
         "api/ellipse",
         "api/datalayer",
         "api/mapprovider",
+        "api/useMap",
       ],
     },
   ],

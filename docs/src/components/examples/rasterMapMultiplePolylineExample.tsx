@@ -30,7 +30,7 @@ export const RasterMapMultiplePolylineExample: React.FC<MapExampleProps> = ({
       <Map
         ncpKeyId={ncpKeyId}
         disableGL
-        mapOptions={{
+        initialOptions={{
           center: { x: 127.0276, y: 37.4979 },
           zoom: 12,
         }}

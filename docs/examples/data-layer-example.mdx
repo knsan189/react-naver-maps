@@ -46,11 +46,11 @@ function DataLayerExample() {
       <div style={{ width: "100%", height: "400px", marginTop: "10px" }}>
         <Map
           ncpKeyId="your-ncp-key-id"
-          mapOptions={{ center: { x: 126.977, y: 37.568 }, zoom: 14 }}
+          initialOptions={{ center: { x: 126.977, y: 37.568 }, zoom: 14 }}
         >
           <DataLayer
             type="geojson"
-            url="/data/sample-geojson.json"
+            data="/data/sample-geojson.json"
             style={style}
             onClick={(event) => {
               const name = event.feature.getProperty("name");
@@ -98,9 +98,9 @@ function DataLayerGpxExample() {
       <div style={{ width: "100%", height: "400px", marginTop: "10px" }}>
         <Map
           ncpKeyId="your-ncp-key-id"
-          mapOptions={{ center: { x: 126.977, y: 37.568 }, zoom: 11 }}
+          initialOptions={{ center: { x: 126.977, y: 37.568 }, zoom: 11 }}
         >
-          <DataLayer type="gpx" url="/data/sample-gpx.gpx" style={style} />
+          <DataLayer type="gpx" data="/data/sample-gpx.gpx" style={style} />
         </Map>
       </div>
     </div>
@@ -112,6 +112,6 @@ export default DataLayerGpxExample;
 
 ## 설명
 
-- `DataLayer`는 `url`을 직접 fetch해서 `geojson/gpx/kml`을 로딩합니다
+- `DataLayer`는 `data`를 fetch해서 `geojson/gpx/kml`을 로딩합니다
 - `style`로 피처의 기본 스타일을 지정할 수 있습니다
 - `onClick` 등 이벤트 콜백을 등록할 수 있습니다

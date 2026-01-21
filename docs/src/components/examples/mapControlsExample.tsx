@@ -51,7 +51,7 @@ export const MapControlsExample: React.FC<MapExampleProps> = ({
         <Map
           ref={mapRef}
           ncpKeyId={ncpKeyId}
-          mapOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 12 }}
+          initialOptions={{ center: { x: 127.0276, y: 37.4979 }, zoom: 12 }}
         />
       </div>
     </div>

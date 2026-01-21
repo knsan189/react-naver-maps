@@ -30,7 +30,7 @@ export const DynamicRectangleExample: React.FC<MapExampleProps> = ({
         </span>
       </div>
       <div style={{ width: "100%", height: "400px" }}>
-        <Map ncpKeyId={ncpKeyId} mapOptions={{ center, zoom: 14 }}>
+        <Map ncpKeyId={ncpKeyId} initialOptions={{ center, zoom: 14 }}>
           <Rectangle
             bounds={bounds}
             fillColor="#34d399"
