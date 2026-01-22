@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useMap } from "./MapProvider";
 import createCustomOverlayClass, {
   CustomOverlayCtor,
   type OverlayAnchorType,
 } from "../utils/customOverlay";
+import { createPortal } from "react-dom";
 
 interface Props {
   children: ReactNode;
@@ -15,17 +16,17 @@ interface Props {
 
 const Overlay = ({ children, position, zIndex, anchor }: Props) => {
   const { current: map } = useMap();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const element = useMemo(() => {
+    return document.createElement("div");
+  }, []);
+
   const [instance, setInstance] = useState<InstanceType<CustomOverlayCtor>>();
   const prevPositionRef = useRef<naver.maps.LatLng>(undefined);
 
   useEffect(() => {
-    if (!map || !containerRef.current) return;
+    if (!map) return;
     const CustomOverlay = createCustomOverlayClass();
-    const newInstance = new CustomOverlay({
-      element: containerRef.current,
-      position,
-    });
+    const newInstance = new CustomOverlay({ element, position });
     newInstance.setMap(map);
     setInstance(newInstance);
     return () => {
@@ -55,7 +56,7 @@ const Overlay = ({ children, position, zIndex, anchor }: Props) => {
     instance.setAnchor(anchor);
   }, [instance, anchor]);
 
-  return <div ref={containerRef}>{children}</div>;
+  return createPortal(children, element);
 };
 
 export default Overlay;
