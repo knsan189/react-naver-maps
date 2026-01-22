@@ -167,6 +167,15 @@ const DataLayer = ({
           if (type === "gpx") layer.addGpx(xml as naver.maps.GPX, autoStyle);
           if (type === "kml") layer.addKml(xml as naver.maps.KML, autoStyle);
           onLoad?.(layer);
+        } else {
+          if (type === "geojson") {
+            layer.addGeoJson(data as naver.maps.GeoJSON, autoStyle);
+          } else if (type === "gpx") {
+            layer.addGpx(data as naver.maps.GPX, autoStyle);
+          } else if (type === "kml") {
+            layer.addKml(data as naver.maps.KML, autoStyle);
+          }
+          onLoad?.(layer);
         }
       } catch (error) {
         if (controller.signal.aborted) return;
