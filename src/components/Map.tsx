@@ -198,19 +198,35 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
         ...initialOptions,
         gl: !disableGL,
       });
-
-      setMapInstance(newInstance);
-      mountedMapContext.onMount(newInstance, mapId);
-      contextValueRef.current = newInstance;
+      let isMounted = false;
+      const initListener = naver.maps.Event.addListener(
+        newInstance,
+        "init",
+        () => {
+          if (isMounted) return;
+          isMounted = true;
+          setMapInstance(newInstance);
+          mountedMapContext.onMount(newInstance, mapId);
+          contextValueRef.current = newInstance;
+          naver.maps.Event.removeListener(initListener);
+        }
+      );
 
       return () => {
+        if (!isMounted) {
+          naver.maps.Event.removeListener(initListener);
+        }
         if (reuseMap) {
           parkMapElement(newInstance);
-          mountedMapContext.onUnmount(mapId, { keep: true });
+          if (isMounted) {
+            mountedMapContext.onUnmount(mapId, { keep: true });
+          }
           contextValueRef.current = undefined;
           return;
         }
-        mountedMapContext.onUnmount(mapId);
+        if (isMounted) {
+          mountedMapContext.onUnmount(mapId);
+        }
         contextValueRef.current = undefined;
         queueMicrotask(() => {
           newInstance.destroy();

@@ -55,11 +55,7 @@ const Overlay = ({ children, position, zIndex, anchor }: Props) => {
     instance.setAnchor(anchor);
   }, [instance, anchor]);
 
-  return (
-    <div>
-      <div ref={containerRef}>{children}</div>
-    </div>
-  );
+  return <div ref={containerRef}>{children}</div>;
 };
 
 export default Overlay;
