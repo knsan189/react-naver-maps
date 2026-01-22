@@ -186,6 +186,7 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
 
         setMapInstance(existing);
         contextValueRef.current = existing;
+        naver.maps.Event.trigger(existing, "init");
 
         return () => {
           parkMapElement(existing);
