@@ -142,6 +142,9 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
     const [mapInstance, setMapInstance] = useState<naver.maps.Map>();
     const contextValueRef = useRef<naver.maps.Map | undefined>(undefined);
 
+    const didCallOnInitRef = useRef(false);
+    const pendingInitTriggerRef = useRef(false);
+
     const { isScriptLoaded } = useScriptLoader({
       ncpKeyId,
       submodules,
@@ -184,9 +187,11 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
 
         existing.refresh();
 
+        pendingInitTriggerRef.current = true;
+        didCallOnInitRef.current = false;
+
         setMapInstance(existing);
         contextValueRef.current = existing;
-        naver.maps.Event.trigger(existing, "init");
 
         return () => {
           parkMapElement(existing);
@@ -199,16 +204,23 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
         ...initialOptions,
         gl: !disableGL,
       });
+
       let isMounted = false;
+
       const initListener = naver.maps.Event.addListener(
         newInstance,
         "init",
         () => {
           if (isMounted) return;
           isMounted = true;
+
+          didCallOnInitRef.current = false;
+          pendingInitTriggerRef.current = false;
+
           setMapInstance(newInstance);
           mountedMapContext.onMount(newInstance, mapId);
           contextValueRef.current = newInstance;
+
           naver.maps.Event.removeListener(initListener);
         }
       );
@@ -223,6 +235,8 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
             mountedMapContext.onUnmount(mapId, { keep: true });
           }
           contextValueRef.current = undefined;
+          didCallOnInitRef.current = false;
+          pendingInitTriggerRef.current = false;
           return;
         }
         if (isMounted) {
@@ -252,11 +266,6 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
 
     useEffect(() => {
       if (!mapInstance) return;
-      mapInstance.setMapTypeId(mapTypeId);
-    }, [mapInstance, mapTypeId]);
-
-    useEffect(() => {
-      if (!mapInstance) return;
 
       const disposers: Array<() => void> = [];
       (Object.keys(EVENT_TO_PROP) as EventKey[]).forEach((eventKey) => {
@@ -270,6 +279,27 @@ const Map = forwardRef<naver.maps.Map, MapProps>(
         disposers.push(() => naver.maps.Event.removeListener(listener));
       });
       return () => disposers.forEach((d) => d());
+    }, [mapInstance]);
+
+    useEffect(() => {
+      if (!mapInstance) return;
+      mapInstance.setMapTypeId(mapTypeId);
+    }, [mapInstance, mapTypeId]);
+
+    useEffect(() => {
+      if (!mapInstance) return;
+      if (!pendingInitTriggerRef.current) return;
+
+      pendingInitTriggerRef.current = false;
+      naver.maps.Event.trigger(mapInstance, "init");
+    }, [mapInstance]);
+
+    useEffect(() => {
+      if (!mapInstance) return;
+      if (didCallOnInitRef.current) return;
+
+      didCallOnInitRef.current = true;
+      handlersRef.current.init?.();
     }, [mapInstance]);
 
     const prevCenterRef = useRef<naver.maps.LatLng | undefined>(undefined);
