@@ -2,7 +2,10 @@
 sidebar_position: 6
 ---
 
-import { DataLayerGeoJsonExample } from "@site/src/components/examples/dataLayerGeoJsonExample";
+import {
+  DataLayerGeoJsonExample,
+  DataLayerGeoJsonUrlExample,
+} from "@site/src/components/examples/dataLayerGeoJsonExample";
 import { DataLayerGpxExample } from "@site/src/components/examples/dataLayerGpxExample";
 import BrowserOnly from "@docusaurus/BrowserOnly";
 
@@ -10,18 +13,20 @@ import BrowserOnly from "@docusaurus/BrowserOnly";
 
 GeoJSON과 GPX 데이터를 로딩해서 지도 위에 표시하는 예제입니다.
 
-## 라이브 예제
+## GeoJSON 라이브 예제 (URL)
 
-<BrowserOnly>{() => <DataLayerGeoJsonExample />}</BrowserOnly>
+<BrowserOnly>{() => <DataLayerGeoJsonUrlExample />}</BrowserOnly>
 
-## GeoJSON 코드
+## GeoJSON 코드 (URL)
 
 ```tsx
 import { useState } from "react";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 import { DataLayer, Map } from "@rousen/react-naver-maps";
 
 function DataLayerExample() {
   const [useAltStyle, setUseAltStyle] = useState(false);
+  const geojsonUrl = useBaseUrl("/data/sample-geojson.json");
   const style = useAltStyle
     ? {
         fillColor: "#f97316",
@@ -50,11 +55,86 @@ function DataLayerExample() {
         >
           <DataLayer
             type="geojson"
-            data="/data/sample-geojson.json"
+            data={geojsonUrl}
             style={style}
             onClick={(event) => {
               const name = event.feature.getProperty("name");
               console.log("선택된 영역:", name);
+            }}
+          />
+        </Map>
+      </div>
+    </div>
+  );
+}
+
+export default DataLayerExample;
+```
+
+## GeoJSON 라이브 예제 (데이터 직접 전달)
+
+<BrowserOnly>{() => <DataLayerGeoJsonExample />}</BrowserOnly>
+
+## GeoJSON 코드 (데이터 직접 전달)
+
+```tsx
+import useBaseUrl from "@docusaurus/useBaseUrl";
+import { DataLayer, Map } from "@rousen/react-naver-maps";
+
+function DataLayerExample() {
+  const geojson = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [126.88269675, 37.48146514],
+        },
+        properties: {
+          id: 1408,
+          detail: "/course/1408",
+        },
+      },
+      {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [126.91014288, 37.47626925],
+        },
+        properties: {
+          id: 1739,
+          detail: "/course/1739",
+        },
+      },
+      {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [126.884041, 37.479118],
+        },
+        properties: {
+          id: 3339,
+          detail: "/course/3339",
+        },
+      },
+    ],
+  };
+
+  return (
+    <div>
+      <div style={{ width: "100%", height: "400px" }}>
+        <Map
+          ncpKeyId="your-ncp-key-id"
+          initialOptions={{ center: { x: 126.977, y: 37.568 }, zoom: 14 }}
+        >
+          <DataLayer
+            type="geojson"
+            data={geojson}
+            style={{
+              icon: {
+                url: useBaseUrl("img/pin.png"),
+              },
             }}
           />
         </Map>

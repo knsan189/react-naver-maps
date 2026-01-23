@@ -33,6 +33,7 @@ export type CustomOverlayCtor = new (opts: OverlayOptions) => {
   setPosition(position: naver.maps.Coord | naver.maps.CoordLiteral): void;
   setZIndex(zIndex?: number): void;
   setAnchor(anchor?: OverlayAnchorType): void;
+  setStyle(style?: Partial<CSSStyleDeclaration>): void;
   onAdd(): void;
   draw(): void;
   destroy(): void;
@@ -48,6 +49,8 @@ const createCustomOverlayClass = (): CustomOverlayCtor => {
     zIndex?: number;
 
     anchor?: OverlayAnchorType;
+
+    _style?: Partial<CSSStyleDeclaration>;
 
     constructor({
       element,
@@ -81,6 +84,11 @@ const createCustomOverlayClass = (): CustomOverlayCtor => {
       this.draw();
     }
 
+    setStyle(style?: Partial<CSSStyleDeclaration>) {
+      this._style = style;
+      this.draw();
+    }
+
     onAdd() {
       const layer = this.getPanes().overlayImage;
       layer.append(this._element);
@@ -100,6 +108,9 @@ const createCustomOverlayClass = (): CustomOverlayCtor => {
       this._element.style.top = `${pixelPosition.y}px`;
       this._element.style.transform =
         anchorStyleTransformMap[this.anchor ?? "bottom-center"];
+      if (this._style) {
+        Object.assign(this._element.style, this._style);
+      }
     }
 
     destroy(): void {
